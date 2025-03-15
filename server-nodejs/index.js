@@ -18,21 +18,6 @@ app.use(cors({
 
 app.use(bodyParser.json());
 
-// ✅ Khai báo Secret Key từ Google reCAPTCHA
-const RECAPTCHA_SECRET_KEY = "6Lf0b_UqAAAAABwZ-xhFqQcCDkoOcZ2qqKrUV378"; // Thay thế bằng Secret Key của bạn
-
-// Hàm xác minh CAPTCHA từ phía server
-async function verifyCaptcha(captchaResponse) {
-  const response = await axios.post(`https://www.google.com/recaptcha/api/siteverify`, null, {
-    params: {
-      secret: RECAPTCHA_SECRET_KEY,
-      response: captchaResponse,
-    },
-  });
-
-  return response.data.success;
-}
-
 // ... (phần code còn lại của bạn)
 let info = {
   username: "",
@@ -123,12 +108,6 @@ app.post('/run', async (req, res) => {
     const { username, password } = req.body;
     info.username = username;
     info.password = password;
-
-    // ✅ Kiểm tra CAPTCHA
-    const captchaValid = await verifyCaptcha(captcha);
-    if (!captchaValid) {
-      return res.status(400).json({ success: false, error: "Captcha không hợp lệ!" });
-    }
 
     const preloginData = await getPrelogin(info.username);
     const hashedPassword = CryptoJS.MD5(info.password);
