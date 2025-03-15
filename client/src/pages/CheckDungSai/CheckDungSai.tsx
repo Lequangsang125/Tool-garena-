@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Toaster, toast } from "sonner"; // ✅ Import Sonner
+import ReCAPTCHA from "react-google-recaptcha"; // ✅ Import reCAPTCHA
 
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import ComponentCard from "../../components/common/ComponentCard";
@@ -14,19 +15,28 @@ export default function CheckDungSai() {
   const [result, setResult] = useState(null); // ✅ Lưu kết quả đúng/sai
   const [showPassword, setShowPassword] = useState(false); // ✅ Ẩn/hiện mật khẩu
   const [accountInfo, setAccountInfo] = useState(null); // ✅ Lưu thông tin tài khoản
+  const [captchaValue, setCaptchaValue] = useState(null); // ✅ Lưu giá trị của captcha
 
   const handleLogin = async () => {
+    if (!captchaValue) {
+      toast.error("❌ Vui lòng xác minh CAPTCHA!", { duration: 2500 });
+      return;
+    }
+  
     toast.info("🔍 Đang kiểm tra tài khoản...", { duration: 1500 });
-
+  
     try {
-      const response = await fetch("https://tool-garena-backend.onrender.com/run", {
+      const response = await fetch("http://localhost:4000/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({
+          username,
+          password,
+          captcha: captchaValue, // Gửi token CAPTCHA đến server
+        }),
       });
-
+  
       const data = await response.json();
-
       if (data.success) {
         toast.success("✅ Tài khoản đúng!", { duration: 2000 });
         setResult("✅ Tài khoản đúng!");
@@ -41,6 +51,11 @@ export default function CheckDungSai() {
       setResult("❌ Lỗi hệ thống, vui lòng thử lại!");
       setAccountInfo(null); // ✅ Xóa thông tin tài khoản nếu có lỗi
     }
+  };
+  
+
+  const handleCaptchaChange = (value) => {
+    setCaptchaValue(value); // ✅ Lưu giá trị CAPTCHA
   };
 
   return (
@@ -70,6 +85,15 @@ export default function CheckDungSai() {
                 </Button>
               </div>
             </div>
+            
+            {/* ✅ Thêm reCAPTCHA vào form */}
+            <div className="space-y-6">
+              <ReCAPTCHA
+                sitekey="6Lf0b_UqAAAAAAUdRNmt2McTLcwXpJh_xy5Tk8ms" // Thay YOUR_SITE_KEY bằng Site Key của bạn
+                onChange={handleCaptchaChange} // Khi captcha được xác nhận
+              />
+            </div>
+            
             <Button size="sm" variant="primary" onClick={handleLogin}>Kiểm tra</Button>
           </ComponentCard>
 
@@ -83,16 +107,15 @@ export default function CheckDungSai() {
           {/* ✅ Hiển thị thông tin tài khoản */}
           {accountInfo && (
             <ComponentCard title="Thông Tin Tài Khoản">
-               <pre className="text-sm dark:text-white">
-              Số điện thoại: {!!accountInfo.user_info.mobile_no ? 'Yes' :'No'} - {accountInfo.user_info.mobile_no}
+              <pre className="text-sm dark:text-white">
+                Số điện thoại: {!!accountInfo.user_info.mobile_no ? 'Yes' :'No'} - {accountInfo.user_info.mobile_no}
               </pre>
               <pre className="text-sm dark:text-white">
-              Email: {!!accountInfo.user_info.email ? 'Yes' :'No'} - {accountInfo.user_info.email}
+                Email: {!!accountInfo.user_info.email ? 'Yes' :'No'} - {accountInfo.user_info.email}
               </pre>
               <pre className="text-sm dark:text-white">
-              CMND: {!!accountInfo.user_info.idcard ? 'Đã gắn' :'No'} - {accountInfo.user_info.idcard}
+                CMND: {!!accountInfo.user_info.idcard ? 'Đã gắn' :'No'} - {accountInfo.user_info.idcard}
               </pre>
-
             </ComponentCard>
           )}
         </div>
