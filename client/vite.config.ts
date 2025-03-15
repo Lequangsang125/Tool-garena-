@@ -16,7 +16,10 @@ export default defineConfig({
     }),
   ],
   server: {
-    port: process.env.PORT || 3000, // Đảm bảo sử dụng cổng mà Render cấp
-    host: '0.0.0.0', // Đảm bảo lắng nghe tất cả các IP
+    port: process.env.PORT || 4000,  // Ensure using Render's provided port
+    host: '0.0.0.0', // Listen on all IPs
+    allowedHosts: [
+      'tool-garena-v1-lqs.onrender.com', // Add this host to the allowed list
+    ],
   },
 });
