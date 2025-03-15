@@ -7,7 +7,12 @@ const CryptoJS = require('crypto-js');
 
 const app = express();
 // vite.config.js
-
+export default {
+  server: {
+    port: process.env.PORT || 4000,  // Dùng cổng mà Render cấp
+    host: '0.0.0.0',  // Đảm bảo lắng nghe tất cả các IP
+  },
+};
 
 
 // ✅ Cấu hình CORS
@@ -133,6 +138,6 @@ app.post('/run', async (req, res) => {
   }
 });
 
-app.listen(port, '0.0.0.0', () => {
+app.listen(port, () => {
   console.log(`Server đang chạy tại http://localhost:${port}`);
 });
