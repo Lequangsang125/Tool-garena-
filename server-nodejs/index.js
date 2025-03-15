@@ -1,18 +1,12 @@
 
-const express = require('express');
-const cors = require('cors'); // ✅ Thêm cors
-const bodyParser = require('body-parser');
-const axios = require('axios');
-const CryptoJS = require('crypto-js');
+import express from 'express';
+import cors from 'cors'; 
+import bodyParser from 'body-parser';
+import axios from 'axios';
+import CryptoJS from 'crypto-js';
 
 const app = express();
-// vite.config.js
-export default {
-  server: {
-    port: process.env.PORT || 4000,  // Dùng cổng mà Render cấp
-    host: '0.0.0.0',  // Đảm bảo lắng nghe tất cả các IP
-  },
-};
+const port = process.env.PORT || 4000;
 
 
 // ✅ Cấu hình CORS
