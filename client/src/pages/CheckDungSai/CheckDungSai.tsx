@@ -19,7 +19,7 @@ export default function CheckDungSai() {
     toast.info("🔍 Đang kiểm tra tài khoản...", { duration: 1500 });
 
     try {
-      const response = await fetch("http://localhost:3000/run", {
+      const response = await fetch("https://tool-garena-backend.onrender.com/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
