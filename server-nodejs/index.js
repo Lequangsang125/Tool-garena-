@@ -11,7 +11,7 @@ const port = process.env.PORT || 4000;
 
 // ✅ Cấu hình CORS
 app.use(cors({
-  origin: 'https://tool-garena-v1-lqs.onrender.com', // Cho phép truy cập từ frontend
+  origin: 'http://localhost:3000', // Cho phép truy cập từ frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Các phương thức được phép
   credentials: true, // Cho phép gửi cookie và headers
 }));
