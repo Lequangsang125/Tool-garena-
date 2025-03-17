@@ -20,6 +20,7 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import CheckSkinLq from "./pages/CheckSkinLq/CheckSkinLq";
 import CheckDungSai from "./pages/CheckDungSai/CheckDungSai";
+import TableDataSkinLq from "./components/tables/BasicTables/TableDataSkinLq";
 
 export default function App() {
   return (
@@ -42,6 +43,7 @@ export default function App() {
             {/* Tables */}
             <Route path="/check-dung-sai" element={<CheckDungSai />} />
             <Route path="/check-skin-lien-quan" element={<CheckSkinLq />} />
+            <Route path="/data-skin" element={<TableDataSkinLq />} />
             <Route path="/basic-tables" element={<BasicTables />} />
 
             {/* Ui Elements */}

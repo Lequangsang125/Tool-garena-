@@ -29,11 +29,16 @@ const navItems: NavItem[] = [
     icon: <GridIcon />,
     name: "Danh sách tool",
     subItems: [
-      { name: "Check đúng sai ", path: "/check-dung-sai", pro: false },
+      { name: "Check đúng sai ", path: "/check-dung-sai", pro: true },
       {
         name: "Check trang phục Liên Quân",
         path: "/check-skin-lien-quan",
-        pro: false,
+        pro: true,
+      },
+      {
+        name: "Data skin liên quân",
+        path: "/data-skin",
+        pro: true,
       },
     ],
   },

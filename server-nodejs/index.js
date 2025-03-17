@@ -18,7 +18,7 @@ app.use(cors({
 
 app.use(bodyParser.json());
 
-// ... (phần code còn lại của bạn)
+
 let info = {
   username: "",
   password: "",
