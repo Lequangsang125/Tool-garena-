@@ -27,18 +27,22 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
-    name: "Danh sách tool",
+    name: "Tool liên quân",
     subItems: [
-      { name: "Check đúng sai ", path: "/check-dung-sai", pro: true },
+      {
+        name: "Check thông tin tài khoản Garena ",
+        path: "/check-thong-tin-garena",
+        new: true,
+      },
       {
         name: "Check trang phục Liên Quân",
         path: "/check-skin-lien-quan",
-        pro: true,
+        new: true,
       },
       {
         name: "Data skin liên quân",
         path: "/data-skin",
-        pro: true,
+        new: true,
       },
     ],
   },
@@ -314,7 +318,7 @@ const AppSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-center"
         }`}
       >
-        <Link to="/" >
+        <Link to="/">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <img

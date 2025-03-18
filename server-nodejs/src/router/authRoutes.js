@@ -1,13 +1,12 @@
 import express from "express";
-import {  getAccountInfo, getLogin, getPrelogin } from "../controllers/authController.js";
+import {getPrelogin, login, loginAndGetSkin } from "../controllers/authController.js";
 
 
-const router = express.Router();
+const authRouter = express.Router();
 
 // Định nghĩa route POST /auth/login
-router.post("/login",getLogin);
-router.post("/prelogin",getPrelogin);
-router.post("/getAccountInfo",getAccountInfo);
+authRouter.post("/login",login);
+authRouter.post("/login-getskin",loginAndGetSkin);
 
 
-export default router;
+export default authRouter;

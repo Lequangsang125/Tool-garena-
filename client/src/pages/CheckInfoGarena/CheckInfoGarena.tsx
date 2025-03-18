@@ -8,7 +8,7 @@ import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
 import Button from "../../components/ui/button/Button";
 
-export default function CheckSkinLq() {
+export default function CheckInfoGarena() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [result, setResult] = useState(null);
@@ -46,7 +46,10 @@ export default function CheckSkinLq() {
   return (
     <>
       <Toaster position="top-center" richColors />
-      <PageMeta title="Check thông tin acc Garena" description="Kiểm tra tài khoản Garena đúng hay sai" />
+      <PageMeta
+        title="Check thông tin acc Garena"
+        description="Kiểm tra tài khoản Garena đúng hay sai"
+      />
       <PageBreadcrumb pageTitle="Check thông tin acc Garena" />
 
       <div className="space-y-3">
@@ -72,7 +75,6 @@ export default function CheckSkinLq() {
               />
               <Button
                 size="xs"
-
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-1"
                 onClick={() => setShowPassword(!showPassword)}
               >
@@ -88,16 +90,53 @@ export default function CheckSkinLq() {
 
         {result && (
           <ComponentCard title="Kết Quả Kiểm Tra">
-            <p className={`text-lg font-bold ${result.includes("✅") ? "text-green-500" : "text-red-500"}`}>{result}</p>
+            <p
+              className={`text-lg font-bold ${
+                result.includes("✅") ? "text-green-500" : "text-red-500"
+              }`}
+            >
+              {result}
+            </p>
             {accountInfo && (
-              <div className="mt-4 space-y-2 dark:text-white">
-                <p>UID: {accountInfo.user_info.uid}</p>
-                <p>Username: {accountInfo.user_info.username}</p>
-                <p>Nickname: {accountInfo.user_info.nickname}</p>
-                <p>Số điện thoại: {accountInfo.user_info.mobile_no || "Không có"}</p>
-                <p>CMND: {accountInfo.user_info.idcard || "Không có"}</p>
-                <p>Google Authenticator: {accountInfo.user_info.is_two_factor ? "Có" : "Không"}</p>
-                <p>Email xác minh: {accountInfo.user_info.is_email_verified ? "Có" : "Không"}</p>
+              <div className="mt-4">
+                <ul className="space-y-2 border rounded-lg p-4 bg-gray-50">
+                  <h3 className="text-lg font-semibold mb-2">
+                    Thông tin tài khoản:
+                  </h3>
+                  <li>
+                    <strong>UID:</strong> {accountInfo.user_info.uid}
+                  </li>
+                  <li>
+                    <strong>Username:</strong> {accountInfo.user_info.username}
+                  </li>
+                  <li>
+                    <strong>Nickname:</strong> {accountInfo.user_info.nickname}
+                  </li>
+                  <li>
+                    <strong>Số điện thoại:</strong> {accountInfo.user_info.mobile_no}
+                    {accountInfo.user_info.mobile_no ? "✅" : "Không có ❌"}
+                  </li>
+                  <li>
+                    <strong>Email:</strong> {accountInfo.user_info.email}
+                    {accountInfo.user_info.email ? "✅" : "Không có ❌"} 
+                  </li>
+                  <li>
+                    <strong>CMND:</strong>{accountInfo.user_info.idcard}
+                    {accountInfo.user_info.idcard ? "✅" : "Không có ❌"}
+                  </li>
+                  <li>
+                    <strong>Xác thực hai bước:</strong>{" "}
+                    {accountInfo.user_info.is_two_factor
+                      ? "Có ✅"
+                      : "Không có ❌"}
+                  </li>
+                  <li>
+                    <strong>Email xác minh:</strong>{" "}
+                    {accountInfo.user_info.is_email_verified
+                      ? "Có ✅"
+                      : "Không có ❌"}
+                  </li>
+                </ul>
               </div>
             )}
           </ComponentCard>

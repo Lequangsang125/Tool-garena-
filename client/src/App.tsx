@@ -19,7 +19,7 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import CheckSkinLq from "./pages/CheckSkinLq/CheckSkinLq";
-import CheckDungSai from "./pages/CheckDungSai/CheckDungSai";
+import CheckInfoGarena from "./pages/CheckInfoGarena/CheckInfoGarena";
 import TableDataSkinLq from "./components/tables/BasicTables/TableDataSkinLq";
 
 export default function App() {
@@ -41,7 +41,7 @@ export default function App() {
             <Route path="/form-elements" element={<FormElements />} />
 
             {/* Tables */}
-            <Route path="/check-dung-sai" element={<CheckDungSai />} />
+            <Route path="/check-thong-tin-garena" element={<CheckInfoGarena />} />
             <Route path="/check-skin-lien-quan" element={<CheckSkinLq />} />
             <Route path="/data-skin" element={<TableDataSkinLq />} />
             <Route path="/basic-tables" element={<BasicTables />} />
