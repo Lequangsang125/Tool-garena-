@@ -50,6 +50,11 @@ const navItems: NavItem[] = [
         new: true,
       },
       {
+        name: "Spam tài khoản Garena ",
+        path: "/spam-acc-garena",
+        new: true,
+      },
+      {
         name: "Data skin liên quân",
         path: "/data-skin",
         new: true,

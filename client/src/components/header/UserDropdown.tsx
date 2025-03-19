@@ -28,7 +28,7 @@ export default function UserDropdown() {
     {/* Chấm tròn màu xanh */}
     <div className="z-10 w-3 h-3 bottom-0 right-0 rounded-full absolute bg-green-400 border-2 border-white"></div>
   </span>
-  <span className="block mr-1 font-medium text-theme-sm">Admin</span>
+  <span className="block mr-1 font-medium text-theme-sm">Le Quang Sang</span>
 
   <svg
     className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${

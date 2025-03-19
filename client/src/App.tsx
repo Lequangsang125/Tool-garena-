@@ -22,6 +22,7 @@ import CheckSkinLq from "./pages/CheckSkinLq/CheckSkinLq";
 import CheckInfoGarena from "./pages/CheckInfoGarena/CheckInfoGarena";
 import TableDataSkinLq from "./components/tables/BasicTables/TableDataSkinLq";
 import GhepAnhLienQuan from "./pages/GhepAnhLienQuan/GhepAnhLienQuan";
+import SpamGarena from "./pages/SpamGarena/SpamGarena";
 
 export default function App() {
   return (
@@ -41,10 +42,11 @@ export default function App() {
             {/* Forms */}
             <Route path="/form-elements" element={<FormElements />} />
 
-            {/* Tables */}
+            {/* Tool liên quân */}
             <Route path="/check-thong-tin-garena" element={<CheckInfoGarena />} />
             <Route path="/check-skin-lien-quan" element={<CheckSkinLq />} />
             <Route path="/ghep-anh-lien-quan" element={<GhepAnhLienQuan />} />
+            <Route path="/spam-acc-garena" element={<SpamGarena />} />
             <Route path="/data-skin" element={<TableDataSkinLq />} />
             <Route path="/basic-tables" element={<BasicTables />} />
 
