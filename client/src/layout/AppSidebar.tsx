@@ -26,7 +26,12 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
-    icon: <GridIcon />,
+    icon: (
+      <img
+        className="w-10 rounded-xs"
+        src="/images/icongame/logolienquan.jpg"
+      />
+    ),
     name: "Tool liên quân",
     subItems: [
       {
@@ -40,6 +45,11 @@ const navItems: NavItem[] = [
         new: true,
       },
       {
+        name: "Ghép ảnh acc liên quân",
+        path: "/ghep-anh-lien-quan",
+        new: true,
+      },
+      {
         name: "Data skin liên quân",
         path: "/data-skin",
         new: true,
@@ -47,13 +57,39 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    icon: (
+      <img className="w-10 rounded-xs" src="/images/icongame/logofifa4.jpg" />
+    ),
+    name: "Tool fifa online 4",
+    subItems: [
+      {
+        name: "Check thông tin tài khoản Garena ",
+        path: "/#",
+        new: true,
+      },
+      {
+        name: "Check trang phục Liên Quân",
+        path: "/#",
+        new: true,
+      },
+      {
+        name: "Data skin liên quân",
+        path: "/#",
+        new: true,
+      },
+    ],
+  },
+];
+
+const othersItems: NavItem[] = [
+  {
     icon: <CalenderIcon />,
-    name: "Calendar",
+    name: "Lịch",
     path: "/calendar",
   },
   {
     icon: <UserCircleIcon />,
-    name: "User Profile",
+    name: "Trang cá nhân",
     path: "/profile",
   },
   {
@@ -62,21 +98,18 @@ const navItems: NavItem[] = [
     subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
   },
   {
-    name: "Tables",
+    name: "Bảng",
     icon: <TableIcon />,
     subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
   },
   {
-    name: "Pages",
+    name: "Trang",
     icon: <PageIcon />,
     subItems: [
       { name: "Blank Page", path: "/blank", pro: false },
       { name: "404 Error", path: "/error-404", pro: false },
     ],
   },
-];
-
-const othersItems: NavItem[] = [
   {
     icon: <PieChartIcon />,
     name: "Charts",
@@ -99,10 +132,10 @@ const othersItems: NavItem[] = [
   },
   {
     icon: <PlugInIcon />,
-    name: "Authentication",
+    name: "Tài khoản",
     subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
+      { name: "Đăng nhập", path: "/signin", pro: false },
+      { name: "Đăng ký", path: "/signup", pro: false },
     ],
   },
 ];
@@ -300,7 +333,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
+      className={`fixed  mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
         ${
           isExpanded || isMobileOpen
             ? "w-[290px]"
@@ -313,39 +346,45 @@ const AppSidebar: React.FC = () => {
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div
-        className={`py-8 flex ${
-          !isExpanded && !isHovered ? "lg:justify-center" : "justify-center"
-        }`}
-      >
-        <Link to="/">
-          {isExpanded || isHovered || isMobileOpen ? (
-            <>
-              <img
-                className=" dark:hidden object-cover w-24 h-8" // Use object-cover to crop and set a smaller size
-                src="/images/logo/porn.jpg"
-                alt="Logo"
-              />
-              <img
-                className="hidden dark:block object-cover w-24 h-8" // Use object-cover to crop and set a smaller size
-                src="/images/logo/porn.jpg"
-                alt="Logo"
-              />
-            </>
-          ) : (
-            <img
-              src="/images/logo/logo-icon.svg"
-              alt="Logo"
-              width={32}
-              height={32}
-            />
-          )}
-        </Link>
-      </div>
+<div
+  className={`hidden py-3 lg:block flex ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-center"}`}
+>
+  <Link to="/" className="flex justify-center">
+    {isExpanded || isHovered || isMobileOpen ? (
+      <>
+        <img
+          className="  dark:hidden object-cover h-20" // Use object-cover to crop and set a smaller size
+          src="/images/logo/1.png"
+          alt="Logo"
+        />
+        <img
+          className="hidden dark:block object-cover h-20" // Use object-cover to crop and set a smaller size
+          src="/images/logo/2.png"
+          alt="Logo"
+        />
+      </>
+    ) : (
+      <>
+        <img
+          className="ml-1 mt-3 dark:hidden object-cover h-[40px] w-[40px]" // Đảm bảo logo nhỏ này cũng căn giữa
+          src="/images/logo/3.png"
+          alt="Logo"
+        />
+        <img
+          className="ml-1 mt-3 hidden dark:block object-cover h-[40px] w-[40px]" // Đảm bảo logo nhỏ này cũng căn giữa
+          src="/images/logo/4.png"
+          alt="Logo"
+        />
+      </>
+    )}
+  </Link>
+</div>
+
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
           <div className="flex flex-col gap-4">
             <div>
+              {/* thêm menu  */}
               <h2
                 className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
                   !isExpanded && !isHovered
@@ -354,7 +393,7 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Menu"
+                  "TOOL GARENA"
                 ) : (
                   <HorizontaLDots className="size-6" />
                 )}
@@ -370,7 +409,7 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
+                  "KHÁC"
                 ) : (
                   <HorizontaLDots />
                 )}

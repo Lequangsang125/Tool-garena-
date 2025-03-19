@@ -24,9 +24,9 @@ export default function TableDataSkinLq() {
       try {
         const response = await fetch("/heroes_skins.json");
         if (!response.ok) throw new Error("Không tìm thấy file JSON");
-
+  
         const data = await response.json();
-
+  
         // Làm phẳng dữ liệu và thêm hero_name vào từng skin
         const flatSkins: Skin[] = data.flatMap((hero: any) =>
           hero.skins.map((skin: any) => ({
@@ -35,18 +35,22 @@ export default function TableDataSkinLq() {
           }))
         );
 
+  
         // Sắp xếp theo id_skin tăng dần
-        const sortedSkins = flatSkins.sort((a, b) => parseInt(a.id_skin) - parseInt(b.id_skin));
-
+        const sortedSkins = flatSkins.sort(
+          (a, b) => parseInt(a.id_skin) - parseInt(b.id_skin)
+        );
+  
         console.log("Dữ liệu làm phẳng và sắp xếp:", sortedSkins);
         setSkinsData(sortedSkins);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     };
-
+  
     fetchData();
   }, []);
+  
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -67,7 +71,7 @@ export default function TableDataSkinLq() {
 
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {skinsData.map((skin, index) => (
-                <TableRow key={skin.id_skin}>
+                <TableRow key={`${skin.id_skin}-${index}`}>
                   {/* STT */}
                   <TableCell className="px-4 py-3 text-gray-500 text-start dark:text-gray-400">{index + 1}</TableCell>
 

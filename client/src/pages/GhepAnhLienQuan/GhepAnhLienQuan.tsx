@@ -15,19 +15,19 @@ import {
   TableRow,
 } from "../../components/ui/table";
 
-export default function CheckSkinLq() {
+export default function GhepAnhLienQuan() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [result, setResult] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [accountInfo, setAccountInfo] = useState(null);
   const [skinsData, setSkinsData] = useState<Skin[]>([]);
   const [filteredSkins, setFilteredSkins] = useState<Skin[]>([]);
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/heroes_skins.json");
+        const response = await fetch("/heroes_skins.json",{mode: "no-cors"});
         if (!response.ok) throw new Error("Không tìm thấy file JSON");
 
         const data = await response.json();
@@ -44,6 +44,8 @@ export default function CheckSkinLq() {
         const sortedSkins = flatSkins.sort((a, b) =>
           a.label_level.localeCompare(b.label_level)
         );
+
+        console.log("Dữ liệu làm phẳng và sắp xếp:", sortedSkins);
         setSkinsData(sortedSkins);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
@@ -61,21 +63,26 @@ export default function CheckSkinLq() {
         "http://localhost:4000/api/lienquan/login-getskin",
         {
           method: "POST",
+          mode: "no-cors",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username, password }),
         }
       );
+
       const data = await response.json();
+
       if (data.success) {
         toast.success("✅ Tài khoản đúng!");
         setResult("✅ Tài khoản đúng!");
         setAccountInfo(data.data);
 
-        const ownedSkins = data?.ToolGiaRe ?? [];
+        const ownedSkins = data?.skinList ?? [];
+
         // Kiểm tra kiểu dữ liệu và thử ép kiểu đúng khi lọc
         const filteredSkins = skinsData.filter((skin) =>
           ownedSkins.includes(Number(skin.id_skin))
         );
+
         setFilteredSkins(filteredSkins);
       } else {
         toast.error("❌ Tài khoản sai!");
@@ -100,15 +107,13 @@ export default function CheckSkinLq() {
         description="Kiểm tra tài khoản Garena đúng hay sai"
       />
       <PageBreadcrumb pageTitle="Check thông tin acc Garena" />
-
+   
       <div className="space-y-3 dark:text-white">
-        <ComponentCard title="Lưu ý và sử dụng">
-          - Web đã mã hóa mật khẩu trước khi kiểm tra
-          <br />
-          - Tài khoản và mật khẩu của bạn luôn được bảo mật
-          <br />- Vui lòng đổi mật khẩu sau mỗi lần kiểm tra tránh ảnh hưởng đến
-          uy tín website
-        </ComponentCard>
+      <ComponentCard title="Lưu ý và sử dụng">
+        - Web đã mã hóa mật khẩu trước khi kiểm tra<br/>
+        - Tài khoản và mật khẩu của bạn luôn được bảo mật<br/>
+        - Vui lòng đổi mật khẩu sau mỗi lần kiểm tra tránh ảnh hưởng đến uy tín website
+      </ComponentCard>
 
         <ComponentCard title="Nhập Tài Khoản">
           <div className="space-y-4">

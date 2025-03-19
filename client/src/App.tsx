@@ -21,6 +21,7 @@ import Home from "./pages/Dashboard/Home";
 import CheckSkinLq from "./pages/CheckSkinLq/CheckSkinLq";
 import CheckInfoGarena from "./pages/CheckInfoGarena/CheckInfoGarena";
 import TableDataSkinLq from "./components/tables/BasicTables/TableDataSkinLq";
+import GhepAnhLienQuan from "./pages/GhepAnhLienQuan/GhepAnhLienQuan";
 
 export default function App() {
   return (
@@ -43,6 +44,7 @@ export default function App() {
             {/* Tables */}
             <Route path="/check-thong-tin-garena" element={<CheckInfoGarena />} />
             <Route path="/check-skin-lien-quan" element={<CheckSkinLq />} />
+            <Route path="/ghep-anh-lien-quan" element={<GhepAnhLienQuan />} />
             <Route path="/data-skin" element={<TableDataSkinLq />} />
             <Route path="/basic-tables" element={<BasicTables />} />
 

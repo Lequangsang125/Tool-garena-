@@ -6,7 +6,7 @@ let info = {
   username: "",
   password: "",
 };
-// hàm tiền đăng nhập 
+// B1-GET: hàm tiền đăng nhập 
 export async function getPrelogin(username) {
   let config = {
     method: "get",
@@ -33,12 +33,12 @@ export async function getPrelogin(username) {
         "6c34MIurz0vTp7mEEAbR88446VmZxLzTjLCZvcwX1ypNT1AagpHyJ-Nq_SCz76e3uIBLnjDCPSG3cFOr1c0hq8SkJWA1SykfI~QgbgyzkhDyiqZxugImyQnVA9U8cpdv",
     },
   };
-  console.log("url prelogin", config.url);
+  // console.log("url prelogin", config.url);
   const response = await axios.request(config);
   return response.data;
   
 }
-// hàm đăng nhập 
+// B2-GET: hàm đăng nhập vào web chính 
 export async function getLogin(username, password) {
   let config = {
     method: "get",
@@ -65,7 +65,7 @@ export async function getLogin(username, password) {
         "2GqV~ROOiaRRpc6bP~fBEAvfPKzjr35a0kMBN0jo3EIsTatuD6G4_9j-ydq9Gvc3IvlRJVKORI_zK6auOrO8klDdNMD7-kdJZT0moINr~JD_RDwVVmxQvrj-KTmKYmSY",
     },
   };
-  console.log("url login", config.url);
+  // console.log("url login", config.url);
   const { data, headers } = await axios.request(config);
   const rawCookies = headers["set-cookie"] || [];
   const cookies = rawCookies.join("; ");
@@ -74,7 +74,7 @@ export async function getLogin(username, password) {
   if (!ssoKey) throw new Error("Không tìm thấy `sso_key`");
   return { data, ssoKey };
 }
-// hàm lấy thông tin tài khoản garena kèm cookie 
+// B3-GET: hàm lấy thông tin tài khoản garena kèm cookie-ssoKey
 export async function getAccountInfo(ssoKey) {
   let config = {
     method: "GET",
@@ -88,7 +88,7 @@ export async function getAccountInfo(ssoKey) {
   const response = await axios.request(config);
   return response.data;
 }
-//hàm lấy cookie để get skin
+//B4-GET: hàm lấy ssokey để đăng nhập trang dịch vụ và lấy ra sessionSig
 export async function loginSaleGarena(ssoKey) {
   try {
     if (!ssoKey) {
@@ -111,7 +111,7 @@ export async function loginSaleGarena(ssoKey) {
     };
 
     const response = await axios.request(config);
-    console.log("Kết quả đăng nhập Sale Garena:", response.data);
+    // console.log("Kết quả đăng nhập Sale Garena:", response.data);
 
     const redirectUri = response.data?.redirect_uri;
     if (!redirectUri) {
@@ -125,7 +125,7 @@ export async function loginSaleGarena(ssoKey) {
       throw new Error("Không lấy được access_token.");
     }
 
-    console.log("Access Token:", accessToken);
+    // console.log("Access Token:", accessToken);
 
     // Gửi request đến redirectUri và lấy cookies
     const sessionSigResponse = await axios.get(redirectUri, {
@@ -139,8 +139,6 @@ export async function loginSaleGarena(ssoKey) {
       },
     });
 
-    console.log("Response Headers:", sessionSigResponse.headers);
-
     // Kiểm tra cookies trong cả 'set-cookie' và 'cookie'
     const setCookies = sessionSigResponse.headers['set-cookie'] || sessionSigResponse.headers['cookie'];
 
@@ -148,25 +146,62 @@ export async function loginSaleGarena(ssoKey) {
       throw new Error("Không tìm thấy cookies trong response.");
     }
 
-    console.log("Cookie Headers:", setCookies);
+    // console.log("Cookie Headers:", setCookies);
 
+    const session = setCookies
+      .find(cookie => cookie.includes("session=") && !cookie.includes("session.sig"))
+      ?.match(/session=([^;]+)/)?.[1];
+    
     const sessionSig = setCookies
       .find(cookie => cookie.includes("session.sig"))
-      ?.split("session.sig=")[1]?.split(";")[0];
-
+      ?.match(/session\.sig=([^;]+)/)?.[1];
+    
+    // console.log("Session:", session);
+    // console.log("Session Sig:", sessionSig);
+    
     if (!sessionSig) {
       throw new Error("Không lấy được session.sig từ cookies.");
     }
-
-    console.log("Session Sig:", sessionSig);
-    return { accessToken, sessionSig };
+    return { session, sessionSig };
   } catch (error) {
     console.error("Lỗi khi đăng nhập Sale Garena:", error.message);
     return null;
   }
 }
+//B5-POST: đăng nhập thành công POST 
+export async function getSkinList(session, sessionSig) {
+  try {
+    const config = {
+      method: "POST",
+      maxBodyLength: Infinity,
+      url: "https://sale.lienquan.garena.vn/graphql",
+      headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+        Connection: "keep-alive",
+        Cookie: `session=${session};session.sig=${sessionSig}`,
+      },
+      data: {
+        query: "{ getUser { id name profile { ownedItemIdList } } }",
+      },
+    };
 
-// Hàm login 
+    const response = await axios.request(config);
+    const skinList = response.data?.data?.getUser?.profile?.ownedItemIdList;
+// console.log(response.data);
+
+    if (!skinList) {
+      throw new Error("Không lấy được danh sách skin.");
+    }
+
+    // console.log("Danh sách skin:", skinList);
+    return skinList;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách skin:", error.message);
+    return null;
+  }
+}
+// Hàm login chỉ để check thôgn tin acc 
 export async function login(req, res) {
   try {
     const { username, password } = req.body;
@@ -184,26 +219,42 @@ export async function login(req, res) {
     }).toString(CryptoJS.format.Hex);
 
     const { data, ssoKey } = await getLogin(info.username, finalPassword);
-    console.log("API check đúng sai:", data);
-    console.log("SSO Key sau khi đăng nhập:", ssoKey);
+    // console.log("API check đúng sai:", data);
+    // console.log("SSO Key sau khi đăng nhập:", ssoKey);
     const accountInfo = await getAccountInfo(ssoKey);
-    console.log("Thông tin tài khoản:", accountInfo);
+    // console.log("Thông tin tài khoản:", accountInfo);
+    const limitedInfo = {
+      user_info: {
+        uid: accountInfo.user_info.uid,
+        username: accountInfo.user_info.username,
+        nickname: accountInfo.user_info.nickname,
+        mobile_no: accountInfo.user_info.mobile_no,
+        email: accountInfo.user_info.email,
+        idcard: accountInfo.user_info.idcard,
+        is_two_factor: accountInfo.user_info.is_two_factor,
+        is_email_verified: accountInfo.user_info.is_email_verified,
+      },
+    };
 
-    res.status(200).json({ success: true, data: accountInfo });
+    res.status(200).json({ 
+      success: 'true',
+      data: limitedInfo });
   } catch (error) {
     console.error("Lỗi trong quá trình chạy:", error);
     res.status(500).json({ success: false, error: error.message });
   }
 }
-
-// hàm login và lấy id skin 
-export async function loginAndGetSkin(req, res){
+// Hàm login và lấy danh sách skin
+export async function loginAndGetSkin(req, res) {
   try {
     const { username, password } = req.body;
     info.username = username;
     info.password = password;
 
+    // Bước 1: Lấy prelogin data
     const preloginData = await getPrelogin(info.username);
+
+    // Bước 2: Mã hóa mật khẩu
     const hashedPassword = CryptoJS.MD5(info.password);
     const encryptedPassword = CryptoJS.SHA256(
       CryptoJS.SHA256(hashedPassword + preloginData.v1) + preloginData.v2
@@ -213,20 +264,28 @@ export async function loginAndGetSkin(req, res){
       padding: CryptoJS.pad.NoPadding,
     }).toString(CryptoJS.format.Hex);
 
+    // Bước 3: Đăng nhập và lấy ssoKey
     const { data, ssoKey } = await getLogin(info.username, finalPassword);
-    console.log("API check đúng sai:", data);
-    console.log("SSO Key sau khi đăng nhập:", ssoKey);
-    const accountInfo = await getAccountInfo(ssoKey);
-    console.log("Thông tin tài khoản:", accountInfo);
-    const accSale = await loginSaleGarena(ssoKey);
-    console.log("đăng nhập sale", accSale);
-    
+    // console.log("API check đúng sai:", data);
+    // console.log("SSO Key sau khi đăng nhập:", ssoKey);
 
-    res.status(200).json({ success: true, data: accountInfo });
+    // Bước 4: Lấy thông tin tài khoản
+    const accountInfo = await getAccountInfo(ssoKey);
+    // console.log("Thông tin tài khoản:", accountInfo);
+
+    // Bước 5: Đăng nhập Sale Garena
+    const accSale = await loginSaleGarena(ssoKey);
+    // console.log("Đăng nhập Sale Garena:", accSale);
+
+    // Bước 6: Lấy danh sách skin bằng accessToken và sessionSig
+    const ToolGiaRe = await getSkinList(accSale.session, accSale.sessionSig);
+
+    res.status(200).json({
+      success: true,
+      ToolGiaRe,
+    });
   } catch (error) {
     console.error("Lỗi trong quá trình chạy:", error);
     res.status(500).json({ success: false, error: error.message });
   }
 }
-
-
