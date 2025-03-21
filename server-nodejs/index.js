@@ -4,7 +4,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
-import authRouter from './src/router/authRoutes.js';
+import authRouter from './src/router/garenaAuthRoutes.js';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -18,7 +18,8 @@ app.use(cors({
 
 app.use(bodyParser.json());
 
-app.use('/api/lienquan',authRouter);
+app.use('/api/lienquan',garenaAuthRouter);
+app.use("/api/auth", authRoutes);
 
 app.listen(port, () => {
   console.log(`Server đang chạy tại http://localhost:${port}`);
