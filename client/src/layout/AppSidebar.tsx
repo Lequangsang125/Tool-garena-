@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
-
 // Assume these icons are imported from an icon library
 import {
   BoxCubeIcon,
@@ -16,6 +15,9 @@ import {
   UserCircleIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
+import { useSelector } from "react-redux";
+
+
 
 type NavItem = {
   name: string;
@@ -54,6 +56,11 @@ const navItems: NavItem[] = [
         path: "/blank?page=ghep-anh",
         new: true,
       },
+      // {
+      //   name: "Quản lý user",
+      //   path: "/get-all-user",
+      //   new: true,
+      // },
 
       // {
       //   name: "Data skin liên quân",
@@ -88,16 +95,24 @@ const navItems: NavItem[] = [
 ];
 
 const othersItems: NavItem[] = [
-  // {
-  //   icon: <CalenderIcon />,
-  //   name: "Lịch",
-  //   path: "/calendar",
-  // },
   {
     icon: <UserCircleIcon />,
     name: "Trang cá nhân",
     path: "/profile",
   },
+  {
+    icon: <PlugInIcon />,
+    name: "Tài khoản",
+    subItems: [
+      { name: "Đăng nhập", path: "/signin", pro: false },
+      { name: "Đăng ký", path: "/signup", pro: false },
+    ],
+  },
+  // {
+  //   icon: <CalenderIcon />,
+  //   name: "Lịch",
+  //   path: "/calendar",
+  // },
   // {
   //   name: "Forms",
   //   icon: <ListIcon />,
@@ -136,17 +151,25 @@ const othersItems: NavItem[] = [
   //     { name: "Videos", path: "/videos", pro: false },
   //   ],
   // },
+
+];
+const othersItems1: NavItem[] = [
+  {
+    icon: <UserCircleIcon />,
+    name: "Trang cá nhân",
+    path: "/profile",
+  },
   {
     icon: <PlugInIcon />,
     name: "Tài khoản",
     subItems: [
-      { name: "Đăng nhập", path: "/signin", pro: false },
-      { name: "Đăng ký", path: "/signup", pro: false },
+      { name: "Đăng xuất", path: "/logout", pro: false },
     ],
   },
 ];
 
 const AppSidebar: React.FC = () => {
+  const user = useSelector((state) => state.auth.login.currentUser);
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
 
@@ -420,7 +443,7 @@ const AppSidebar: React.FC = () => {
                   <HorizontaLDots />
                 )}
               </h2>
-              {renderMenuItems(othersItems, "others")}
+              {user ?renderMenuItems(othersItems1, "others"): renderMenuItems(othersItems, "others") }
             </div>
           </div>
         </nav>

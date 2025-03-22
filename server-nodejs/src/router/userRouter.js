@@ -10,6 +10,6 @@ userRoutes.get("/",verifyToken , getAllUsers);           // Lấy tất cả use
 userRoutes.get("/me",  getCurrentUser); // Lấy user hiện tại
 userRoutes.get("/:id", getUserById);         // Lấy user theo ID
 userRoutes.put("/:id",verifyToken, updateUser);          // Cập nhật user
-userRoutes.delete("/:id",verifyTokenAndAdminAuth, deleteUser);       // Xóa user
+userRoutes.delete("/:id",verifyToken, deleteUser);       // Xóa user
 
 export default userRoutes;

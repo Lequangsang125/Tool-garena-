@@ -1,6 +1,5 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Toaster, toast } from "sonner";
-import Cookies from 'js-cookie';
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import ComponentCard from "../../components/common/ComponentCard";
 import PageMeta from "../../components/common/PageMeta";
@@ -8,6 +7,9 @@ import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
 import Button from "../../components/ui/button/Button";
 import ReCaptcha from "../../components/common/ReCaptcha";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router";
+
 
 export default function CheckInfoGarena() {
   const [username, setUsername] = useState("");
@@ -16,37 +18,32 @@ export default function CheckInfoGarena() {
   const [showPassword, setShowPassword] = useState(false);
   const [accountInfo, setAccountInfo] = useState(null);
   const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const navigate = useNavigate()
   const recaptchaRef = useRef(null);
+  const user = useSelector((state) => state.auth.login?.currentUser);
+    useEffect(() => {
+      if (!user) {
+        navigate('/signin')
+      }})
 
   const handleLogin = async () => {
     if (!recaptchaToken) {
       toast.error("⚠ Vui lòng xác nhận reCAPTCHA!");
       return;
     }
-  
     toast.info("🔍 Đang kiểm tra tài khoản...");
-  
     try {
-      const token = Cookies.get("token");
-      if (!token) {
-        toast.error("🚫 Bạn chưa đăng nhập! Vui lòng đăng nhập trước.");
-        setResult("🚫 Bạn chưa đăng nhập! Vui lòng đăng nhập trước.");
-        setAccountInfo(null);
-        return; // Dừng quá trình xử lý khi thiếu token
-      }
-  
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/lienquan/login-garena`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json", // Đảm bảo request có header đúng
         },
         body: JSON.stringify({ username, password, recaptchaToken }),
       });
-  
+
       const data = await response.json();
-  
-      if (data.success) {
+
+      if (data?.success) {
         toast.success("✅ Tài khoản đúng!");
         setResult("✅ Tài khoản đúng!");
         setAccountInfo(data.data);
@@ -56,21 +53,15 @@ export default function CheckInfoGarena() {
         setAccountInfo(null);
       }
     } catch (error) {
-      // Kiểm tra lỗi từ hệ thống
-      if (error.message === "Unauthorized" || error.message.includes("token")) {
-        toast.error("❌ Lỗi thiếu token, vui lòng đăng nhập lại!");
-        setResult("❌ Lỗi thiếu token, vui lòng đăng nhập lại!");
-      } else {
-        toast.error("❌ Lỗi hệ thống, vui lòng thử lại!");
-        setResult("❌ Lỗi hệ thống, vui lòng thử lại!");
-      }
+      toast.error("❌ Lỗi hệ thống, vui lòng thử lại!");
+      setResult("❌ Lỗi hệ thống, vui lòng thử lại!");
       setAccountInfo(null);
     }
-  
-    // TỰ ĐỘNG RESET reCAPTCHA SAU KHI XỬ LÝ XONG
+    
+    // TỰ ĐỘNG RESET reCAPTCHA SAU KHI XỬ LÝ XONG, nếu không có lỗi
     recaptchaRef.current?.resetCaptcha();
   };
-  
+
   return (
     <>
       <Toaster position="top-center" richColors />
@@ -113,8 +104,7 @@ export default function CheckInfoGarena() {
             {/* reCAPTCHA */}
             <ReCaptcha ref={recaptchaRef} onVerify={setRecaptchaToken} />
 
-            <Button
-              size="sm" variant="primary" onClick={handleLogin}>
+            <Button size="sm" variant="primary" onClick={handleLogin}>
               Kiểm tra
             </Button>
           </div>

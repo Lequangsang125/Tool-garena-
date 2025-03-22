@@ -12,15 +12,16 @@ const authSlice = createSlice({
             isFetching: false,
             error: false,
             success: false,
-        }
-    }, // ✅ Thêm dấu phẩy sau `initialState`
+        },
+
+    },
     reducers: {
-        // trạng thái đăng nhập
+        // Trạng thái đăng nhập
         loginStart: (state) => {
             state.login.isFetching = true;
         },
         loginSuccess: (state, action) => {
-            state.login.isFetching = false; // ✅ Đúng cú pháp
+            state.login.isFetching = false;
             state.login.currentUser = action.payload;
             state.login.error = false;
         },
@@ -28,12 +29,13 @@ const authSlice = createSlice({
             state.login.isFetching = false;
             state.login.error = true;
         },
-// trạng thái đăng ký
+
+        // Trạng thái đăng ký
         registerStart: (state) => {
             state.register.isFetching = true;
         },
-        registerSuccess: (state, action) => {
-            state.register.isFetching = false; // ✅ Đúng cú pháp
+        registerSuccess: (state) => {
+            state.register.isFetching = false;
             state.register.error = false;
             state.register.success = true;
         },
@@ -41,7 +43,21 @@ const authSlice = createSlice({
             state.register.isFetching = false;
             state.register.error = true;
             state.register.success = false;
-        }
+        },
+
+        // Trạng thái đăng xuất
+        logoutStart: (state) => {
+            state.login.isFetching = true;
+        },
+        logoutSuccess: (state) => {
+            state.login.isFetching = false;
+            state.login.error = false;
+            state.login.currentUser = null; // ✅ Đặt currentUser về null trong login, không phải logout
+        },
+        logoutFailed: (state) => {
+            state.login.isFetching = false;
+            state.login.error = true;
+        },
     }
 });
 
@@ -52,7 +68,10 @@ export const {
     loginFailed,
     registerStart,
     registerSuccess,
-    registerFailed
+    registerFailed,
+    logoutStart,
+    logoutSuccess,
+    logoutFailed // ✅ Thiếu logout actions nên thêm vào
 } = authSlice.actions;
 
 // Export reducer

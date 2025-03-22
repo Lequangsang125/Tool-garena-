@@ -8,8 +8,8 @@ import { verifyToken } from "../middlewares/auth.js";
 const garenaAuthRouter = express.Router();
 
 // Định nghĩa route POST /auth/login
-garenaAuthRouter.post("/login-garena",verifyRecaptcha,verifyToken, loginGarena);
-garenaAuthRouter.post("/login-getskin",verifyToken,loginAndGetSkin);
+garenaAuthRouter.post("/login-garena",verifyRecaptcha, loginGarena);
+garenaAuthRouter.post("/login-getskin",verifyRecaptcha,loginAndGetSkin);
 garenaAuthRouter.post("/spam-garena",verifyToken,spamAccGarena);
 
 

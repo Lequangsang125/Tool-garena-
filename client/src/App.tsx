@@ -24,6 +24,7 @@ import TableDataSkinLq from "./components/tables/BasicTables/TableDataSkinLq";
 import GhepAnhLienQuan from "./pages/GhepAnhLienQuan/GhepAnhLienQuan";
 import SpamGarena from "./pages/SpamGarena/SpamGarena";
 import { Children } from "react";
+import UserTable from "./pages/UserTable/UserTable";
 
 export default function App() {
   return (
@@ -56,6 +57,8 @@ export default function App() {
             <Route path="/data-skin" element={<TableDataSkinLq />} />
             <Route path="/basic-tables" element={<BasicTables />} />
 
+            <Route path="/get-all-user" element={<UserTable />} />
+
             {/* Ui Elements */}
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/avatars" element={<Avatars />} />
@@ -69,7 +72,14 @@ export default function App() {
             <Route path="/bar-chart" element={<BarChart />} />
           </Route>
 
-          {/* Auth Layout */}
+           {/* Layout riêng cho admin */}
+        {/* <Route element={<ProtectedRoute requiredRole="admin" />}>
+          <Route element={<AdminLayout />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/users" element={<ManageUsers />} />
+            <Route path="/admin/reports" element={<AdminReports />} />
+          </Route>
+        </Route> */}
 
 
           {/* Fallback Route */}

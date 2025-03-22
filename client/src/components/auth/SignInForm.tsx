@@ -3,14 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
-import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../redux/apiRequest";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(""); // lưu lỗi hiển thị
@@ -20,16 +18,18 @@ export default function SignInForm() {
   const handleLogin = async (e) => {
     e.preventDefault();
     const newUser = { username, password };
-    
+  
     console.log("🟢 Đang gửi dữ liệu:", newUser);
   
     try {
       await loginUser(newUser, dispatch, navigate);
     } catch (error) {
-      console.error("🔴 Lỗi đăng nhập:", error.response?.data || error.message);
+      // Lấy thông báo lỗi từ phản hồi của API
+      const errorMsg = error.response?.data?.message || error.message || "Đã có lỗi xảy ra";
+      setError(errorMsg);  // Cập nhật thông báo lỗi vào state
+      console.error("🔴 Lỗi đăng nhập:", errorMsg);
     }
   };
-  
   return (
     <div className="flex flex-col flex-1">
       <div className="flex flex-col justify-center lg:mt-30 w-full max-w-md mx-auto">
@@ -78,12 +78,7 @@ export default function SignInForm() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    {/* <Checkbox checked={isChecked} onChange={setIsChecked} />
-                    <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
-                      Lưu đăng nhập
-                    </span> */}
-                  </div>
+                  <div className="flex items-center gap-3"></div>
                   <Link
                     to="/reset-password"
                     className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
@@ -98,7 +93,7 @@ export default function SignInForm() {
                 </div>
               </div>
             </form>
-            {error && <p className="text-red-500 text-center mt-4">{error}</p>} {/* Hiển thị lỗi khi có lỗi */}
+            {error && <p className="text-red-500 text-center mt-4">{error}</p>}
 
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">

@@ -24,8 +24,7 @@ const UserSchema = new mongoose.Schema(
       required: [true, "Mật khẩu không được để trống"],
     },
     admin: {
-      type: String,  // Chắc chắn rằng enum này có giá trị hợp lệ
-      enum: ['true', 'false'],  // Ví dụ nếu chỉ có 'true' hoặc 'false'
+      type: Boolean,  // Chắc chắn rằng enum này có giá trị hợp lệ
       default: 'false'
   },
     balance: {

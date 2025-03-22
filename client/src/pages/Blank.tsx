@@ -1,9 +1,19 @@
+
+import { useNavigate } from "react-router";
 import PageBreadcrumb from "../components/common/PageBreadCrumb";
 import PageMeta from "../components/common/PageMeta";
 import { FaFacebook, FaTelegram, FaCommentDots } from "react-icons/fa";
 import { SiZalo } from "react-icons/si";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 export default function Blank() {
+  const navigate = useNavigate()
+  const user = useSelector((state) => state.auth.login?.currentUser )
+  useEffect(() => {
+    if (!user) {
+      navigate('/signin')
+    }})
   return (
     <div>
       <PageMeta

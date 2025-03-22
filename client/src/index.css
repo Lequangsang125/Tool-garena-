@@ -792,3 +792,8 @@ span.flatpickr-weekday,
     }
 
 }
+@media (min-width: 991px) and (max-width: 1023px) {
+  .app-menu {
+    display: flex !important;
+  }
+}

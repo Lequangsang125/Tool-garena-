@@ -104,7 +104,7 @@ export const refreshTokenHandler = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
     });
 
-    return res.json({ accessToken: newAccessToken });
+    return res.json({message:"accesstoken sau khi làm mới ", accessToken: newAccessToken });
   } catch (error) {
     return res.status(403).json({ message: "Refresh token không hợp lệ" });
   }
@@ -114,15 +114,30 @@ export const refreshTokenHandler = async (req, res) => {
 // Đăng xuất
 export const logout = async (req, res) => {
   try {
-    res.clearCookie("refreshToken");
-    refreshTokens = refreshTokens.filter(token => token !== req.cookies.refreshToken)
+    // Kiểm tra xem refreshToken có tồn tại trong cookies không
+    const { refreshToken } = req.cookies;
+    if (!refreshToken) {
+      return res.status(400).json({ message: "Không tìm thấy refreshToken" });
+    }
+
+    // Xóa cookie refreshToken
+    res.clearCookie("refreshToken", {
+      httpOnly: true,    // Cookie chỉ có thể được truy cập bởi server
+      secure: process.env.NODE_ENV === 'production', // Sử dụng secure trong môi trường production
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // Sử dụng 'None' trong production, 'Lax' trong development
+      path: '/'          // Đảm bảo path là đúng
+    });
+
+    // Lọc bỏ refreshToken khỏi danh sách các token hợp lệ
+    refreshTokens = refreshTokens.filter(token => token !== refreshToken);
+
+    // Phản hồi thành công
     return res.status(200).json({ message: "Đăng xuất thành công" });
   } catch (error) {
     console.error("Lỗi server:", error);
     return res.status(500).json({ message: "Lỗi server" });
   }
 };
-
 
 // Gửi email quên mật khẩu
 export const forgotPassword = async (req, res) => {
