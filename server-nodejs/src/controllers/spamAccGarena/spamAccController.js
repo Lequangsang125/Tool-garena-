@@ -47,7 +47,6 @@ export async function initRecovery(username) {
     }
 }
 
-
 // Hàm gửi request submitRecovery
 async function submitRecovery(data) {
     try {
@@ -93,7 +92,6 @@ async function submitRecovery(data) {
         return false; // Gửi thất bại
     }
 }
-
 // Hàm spam 
 export async function spamAccGarena(req, res) {
     const { username } = req.body;

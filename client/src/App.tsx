@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/OtherPage/NotFound";
@@ -23,6 +23,7 @@ import CheckInfoGarena from "./pages/CheckInfoGarena/CheckInfoGarena";
 import TableDataSkinLq from "./components/tables/BasicTables/TableDataSkinLq";
 import GhepAnhLienQuan from "./pages/GhepAnhLienQuan/GhepAnhLienQuan";
 import SpamGarena from "./pages/SpamGarena/SpamGarena";
+import { Children } from "react";
 
 export default function App() {
   return (
@@ -32,7 +33,12 @@ export default function App() {
         <Routes>
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
-            <Route index path="/" element={<Home />} />
+
+            {/* Route chính */}
+            <Route path="/" element={<Home />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            {/* Route con */}
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
@@ -64,8 +70,7 @@ export default function App() {
           </Route>
 
           {/* Auth Layout */}
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
+
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />

@@ -6,10 +6,12 @@ const Backdrop: React.FC = () => {
   if (!isMobileOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-      onClick={toggleMobileSidebar}
-    />
+<div
+  className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm lg:hidden"
+  onClick={toggleMobileSidebar}
+/>
+
+
   );
 };
 

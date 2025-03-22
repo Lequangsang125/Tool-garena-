@@ -1,13 +1,13 @@
 import express from "express";
+import { forgotPassword, login, logout, refreshTokenHandler, register } from "../controllers/dangKyDangNhap/authController.js";
+import { verifyToken } from "../middlewares/auth.js";
 
 const authRouter = express.Router();
 
-// Định nghĩa route POST /auth/login
-authRouter.post("/signin",login);
-authRouter.post("/signup",login);
-authRouter.post("/logout",login);
-
-
-
+authRouter.post("/register", register);
+authRouter.post("/login", login);
+authRouter.post("/refresh-token",refreshTokenHandler );
+authRouter.post("/logout",verifyToken, logout);
+authRouter.post("/forgot-password", forgotPassword);
 
 export default authRouter;

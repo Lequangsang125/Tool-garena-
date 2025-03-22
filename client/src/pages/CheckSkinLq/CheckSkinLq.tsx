@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Toaster, toast } from "sonner";
-
+import { useMutation } from "@tanstack/react-query";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import ComponentCard from "../../components/common/ComponentCard";
 import PageMeta from "../../components/common/PageMeta";
@@ -14,16 +14,22 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/ui/table";
+import ReCaptcha from "../../components/common/ReCaptcha";
+import Skeleton from "../../components/ui/Skeleton";
+import { loginGetSkin } from "../../api/checkSkinApi";
 
 export default function CheckSkinLq() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [result, setResult] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [accountInfo, setAccountInfo] = useState(null);
   const [skinsData, setSkinsData] = useState<Skin[]>([]);
   const [filteredSkins, setFilteredSkins] = useState<Skin[]>([]);
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const recaptchaRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false); // Thêm state loading
 
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,16 +37,12 @@ export default function CheckSkinLq() {
         if (!response.ok) throw new Error("Không tìm thấy file JSON");
 
         const data = await response.json();
-
-        // Làm phẳng dữ liệu và thêm hero_name vào từng skin
         const flatSkins: Skin[] = data.flatMap((hero: any) =>
           hero.skins.map((skin: any) => ({
             ...skin,
             hero_name: hero.hero_name,
           }))
         );
-
-        // Sắp xếp theo id_skin tăng dần
         const sortedSkins = flatSkins.sort((a, b) =>
           a.label_level.localeCompare(b.label_level)
         );
@@ -49,48 +51,50 @@ export default function CheckSkinLq() {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
     };
-
     fetchData();
   }, []);
 
-  const handleLogin = async () => {
-    toast.info("🔍 Đang kiểm tra tài khoản...");
+  // 🟢 Sử dụng API từ file riêng
+  const loginMutation = useMutation({
+    mutationFn: () => {
+      if (!username || !password) {
+        toast.error("⚠️ Vui lòng nhập tài khoản và mật khẩu!");
+        return Promise.reject(new Error("Thiếu thông tin đăng nhập"));
+      }
+      if (!recaptchaToken) {
+        toast.error("⚠️ Bạn chưa xác minh reCAPTCHA!");
+        return Promise.reject(new Error("Chưa xác minh reCAPTCHA"));
+      }
 
-    try {
-      const response = await fetch(
-        "http://localhost:4000/api/lienquan/login-getskin",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
-        }
-      );
-      const data = await response.json();
+      setIsLoading(true);
+      return loginGetSkin(username, password, recaptchaToken);
+    },
+    onSuccess: (data) => {
+      setIsLoading(false);
+      toast.info("🔍 Đang kiểm tra tài khoản...");
+
       if (data.success) {
         toast.success("✅ Tài khoản đúng!");
-        setResult("✅ Tài khoản đúng!");
-        setAccountInfo(data.data);
-
         const ownedSkins = data?.ToolGiaRe ?? [];
-        // Kiểm tra kiểu dữ liệu và thử ép kiểu đúng khi lọc
-        const filteredSkins = skinsData.filter((skin) =>
-          ownedSkins.includes(Number(skin.id_skin))
-        );
-        setFilteredSkins(filteredSkins);
+        setFilteredSkins(skinsData.filter((skin) => ownedSkins.includes(Number(skin.id_skin))));
+        setResult("✅ Tài khoản đúng!");
       } else {
         toast.error("❌ Tài khoản sai!");
-        setResult("❌ Tài khoản sai!");
-        setAccountInfo(null);
         setFilteredSkins([]);
+        setResult("❌ Tài khoản sai!");
       }
-    } catch (error) {
-      console.error("Lỗi khi fetch API:", error);
-      toast.error("❌ Lỗi hệ thống, vui lòng thử lại!");
-      setResult("❌ Lỗi hệ thống, vui lòng thử lại!");
-      setAccountInfo(null);
+    },
+    onError: (error) => {
+      setIsLoading(false);
+      toast.error(error.message || "❌ Đã xảy ra lỗi, vui lòng thử lại!");
       setFilteredSkins([]);
-    }
-  };
+    },
+    onSettled: () => {
+      setIsLoading(false);
+      recaptchaRef.current?.resetCaptcha();
+    },
+  });
+
 
   return (
     <>
@@ -138,10 +142,22 @@ export default function CheckSkinLq() {
                 {showPassword ? "Ẩn" : "Hiện"}
               </Button>
             </div>
+            <ReCaptcha ref={recaptchaRef} onVerify={setRecaptchaToken} />
+            <Button
+  size="sm"
+  variant="primary"
+  onClick={() => {
+    if (!recaptchaToken) {
+      toast.error("⚠️ Vui lòng xác minh reCAPTCHA!");
+      return;
+    }
+    loginMutation.mutate(); // Gửi request, BE sẽ kiểm tra token từ cookie
+  }}
+>
+  {isLoading ? "Đang kiểm tra..." : "Kiểm tra"}
+</Button>
 
-            <Button size="sm" variant="primary" onClick={handleLogin}>
-              Kiểm tra
-            </Button>
+
           </div>
         </ComponentCard>
 
@@ -185,7 +201,28 @@ export default function CheckSkinLq() {
                 </TableHeader>
 
                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                  {filteredSkins.length === 0 ? (
+                  {isLoading ? (
+                    // Hiển thị skeleton loading khi đang tải
+                    Array.from({ length: 5 }).map((_, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="px-4 w-10 lg:w-30 py-3">
+                          <Skeleton className="h-4 w-4" />
+                        </TableCell>
+                        <TableCell className="px-3 w-50 lg:w-60 py-2">
+                          <Skeleton className="h-30 w-30" />
+                        </TableCell>
+                        <TableCell className="px-4 py-3">
+                          <Skeleton className="h-4 w-20" />
+                        </TableCell>
+                        <TableCell className="px-4 mt-10 py-3 hidden lg:block">
+                          <Skeleton className="h-4 w-20" />
+                        </TableCell>
+                        <TableCell className="px-4 py-3">
+                          <Skeleton className="h-10 w-20" />
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : filteredSkins.length === 0 ? (
                     <TableRow>
                       <TableCell
                         colSpan="7"
@@ -193,7 +230,7 @@ export default function CheckSkinLq() {
                       >
                         {result === "❌ Tài khoản sai!"
                           ? "Tài khoản hoặc mật khẩu không chính xác."
-                          : "Tài khoản không sở hữu trang phục nào!"}
+                          : "❌ Tài khoản sai!"}
                       </TableCell>
                     </TableRow>
                   ) : (

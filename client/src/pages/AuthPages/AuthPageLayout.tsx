@@ -18,15 +18,19 @@ export default function AuthLayout({
             <GridShape />
             <div className="flex flex-col items-center max-w-xs">
               <Link to="/" className="block mb-4">
-                <img
-                  width={231}
-                  height={48}
-                  src="/images/logo/auth-logo.svg"
-                  alt="Logo"
-                />
+            <img
+              className="dark:hidden w-[238px] h-[238px] object-cover  h-20" // Use object-cover to crop and set a smaller size
+              src="/images/logo/1.png"
+              alt="Logo"
+            />
+            <img
+              className="hidden dark:block w-[238px] h-[238px] object-cover h-20" // Use object-cover to crop and set a smaller size
+              src="/images/logo/2.png"
+              alt="Logo"
+            />
               </Link>
-              <p className="text-center text-gray-400 dark:text-white/60">
-                Free and Open-Source Tailwind CSS Admin Dashboard Template
+              <p className="text-center text-2xl text-gray-400 dark:text-white/60">
+                Chào mừng bạn đến với ToolGiaRe.com
               </p>
             </div>
           </div>

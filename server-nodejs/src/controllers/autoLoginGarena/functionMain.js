@@ -3,6 +3,7 @@ import CryptoJS from 'crypto-js';
 import { getAccountInfo, getLogin, getPrelogin } from './loginController.js';
 import { getSkinList, loginSaleGarena } from './loginAndGetSessionController.js';
 
+
 //==================hàm con góp phần chạy luồng==============
 // B1-GET: hàm tiền đăng nhập 
 // B2-GET: hàm đăng nhập vào web chính 
@@ -21,7 +22,7 @@ let info = {
     password: "",
   };
   
-export async function login(req, res) {
+export async function loginGarena(req, res) {
     try {
       const { username, password } = req.body;
       info.username = username;

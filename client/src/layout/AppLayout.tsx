@@ -3,12 +3,13 @@ import { Outlet } from "react-router";
 import AppHeader from "./AppHeader";
 import Backdrop from "./Backdrop";
 import AppSidebar from "./AppSidebar";
+import AppFooter from "./AppFooter"; // Thêm footer
 
 const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
 
   return (
-    <div className="min-h-screen xl:flex">
+    <div className="min-h-screen xl:flex flex-col">
       <div>
         <AppSidebar />
         <Backdrop />
@@ -19,9 +20,12 @@ const LayoutContent: React.FC = () => {
         } ${isMobileOpen ? "ml-0" : ""}`}
       >
         <AppHeader />
-        <div className=" mx-auto max-w-(--breakpoint) md:p-3 p-3">
+        <div className="mx-auto max-w-(--breakpoint) px-3 pt-3 pb-30 md:p-3 md:pb-30 ">
           <Outlet />
         </div>
+      </div>
+      <div>
+      <AppFooter /> {/* Thêm footer ở đây */}
       </div>
     </div>
   );

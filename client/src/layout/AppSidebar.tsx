@@ -45,20 +45,21 @@ const navItems: NavItem[] = [
         new: true,
       },
       {
-        name: "Ghép ảnh acc liên quân",
-        path: "/ghep-anh-lien-quan",
-        new: true,
-      },
-      {
         name: "Spam tài khoản Garena ",
         path: "/spam-acc-garena",
         new: true,
       },
       {
-        name: "Data skin liên quân",
-        path: "/data-skin",
+        name: "Ghép ảnh acc liên quân",
+        path: "/blank?page=ghep-anh",
         new: true,
       },
+
+      // {
+      //   name: "Data skin liên quân",
+      //   path: "/data-skin",
+      //   new: true,
+      // },
     ],
   },
   {
@@ -67,74 +68,74 @@ const navItems: NavItem[] = [
     ),
     name: "Tool fifa online 4",
     subItems: [
+      // {
+      //   name: "Check thông tin tài khoản Garena ",
+      //   path: "/#",
+      //   new: true,
+      // },
       {
-        name: "Check thông tin tài khoản Garena ",
-        path: "/#",
+        name: "Check thông tin acc FCO",
+        path: "/blank?page=check-acc-fco",
         new: true,
       },
-      {
-        name: "Check trang phục Liên Quân",
-        path: "/#",
-        new: true,
-      },
-      {
-        name: "Data skin liên quân",
-        path: "/#",
-        new: true,
-      },
+      // {
+      //   name: "Data skin liên quân",
+      //   path: "/#",
+      //   new: true,
+      // },
     ],
   },
 ];
 
 const othersItems: NavItem[] = [
-  {
-    icon: <CalenderIcon />,
-    name: "Lịch",
-    path: "/calendar",
-  },
+  // {
+  //   icon: <CalenderIcon />,
+  //   name: "Lịch",
+  //   path: "/calendar",
+  // },
   {
     icon: <UserCircleIcon />,
     name: "Trang cá nhân",
     path: "/profile",
   },
-  {
-    name: "Forms",
-    icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
-  {
-    name: "Bảng",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  },
-  {
-    name: "Trang",
-    icon: <PageIcon />,
-    subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
-    ],
-  },
-  {
-    icon: <PieChartIcon />,
-    name: "Charts",
-    subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
-    ],
-  },
-  {
-    icon: <BoxCubeIcon />,
-    name: "UI Elements",
-    subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
-    ],
-  },
+  // {
+  //   name: "Forms",
+  //   icon: <ListIcon />,
+  //   subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+  // },
+  // {
+  //   name: "Bảng",
+  //   icon: <TableIcon />,
+  //   subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+  // },
+  // {
+  //   name: "Trang",
+  //   icon: <PageIcon />,
+  //   subItems: [
+  //     { name: "Blank Page", path: "/blank", pro: false },
+  //     { name: "404 Error", path: "/error-404", pro: false },
+  //   ],
+  // },
+  // {
+  //   icon: <PieChartIcon />,
+  //   name: "Charts",
+  //   subItems: [
+  //     { name: "Line Chart", path: "/line-chart", pro: false },
+  //     { name: "Bar Chart", path: "/bar-chart", pro: false },
+  //   ],
+  // },
+  // {
+  //   icon: <BoxCubeIcon />,
+  //   name: "UI Elements",
+  //   subItems: [
+  //     { name: "Alerts", path: "/alerts", pro: false },
+  //     { name: "Avatar", path: "/avatars", pro: false },
+  //     { name: "Badge", path: "/badge", pro: false },
+  //     { name: "Buttons", path: "/buttons", pro: false },
+  //     { name: "Images", path: "/images", pro: false },
+  //     { name: "Videos", path: "/videos", pro: false },
+  //   ],
+  // },
   {
     icon: <PlugInIcon />,
     name: "Tài khoản",
@@ -223,11 +224,11 @@ const AppSidebar: React.FC = () => {
               className={`menu-item group ${
                 openSubmenu?.type === menuType && openSubmenu?.index === index
                   ? "menu-item-active"
-                  : "menu-item-inactive"
+                  : "menu-item-inactive "
               } cursor-pointer ${
                 !isExpanded && !isHovered
                   ? "lg:justify-center"
-                  : "lg:justify-start"
+                  : "lg:justify-start gradient"
               }`}
             >
               <span
@@ -271,7 +272,7 @@ const AppSidebar: React.FC = () => {
                   {nav.icon}
                 </span>
                 {(isExpanded || isHovered || isMobileOpen) && (
-                  <span className="menu-item-text">{nav.name}</span>
+                  <span className="menu-item-text gradient">{nav.name}</span>
                 )}
               </Link>
             )
@@ -296,7 +297,7 @@ const AppSidebar: React.FC = () => {
                       to={subItem.path}
                       className={`menu-dropdown-item ${
                         isActive(subItem.path)
-                          ? "menu-dropdown-item-active"
+                          ? "menu-dropdown-item-active gradient"
                           : "menu-dropdown-item-inactive"
                       }`}
                     >
@@ -304,7 +305,7 @@ const AppSidebar: React.FC = () => {
                       <span className="flex items-center gap-1 ml-auto">
                         {subItem.new && (
                           <span
-                            className={`ml-auto ${
+                            className={`ml-auto gradient ${
                               isActive(subItem.path)
                                 ? "menu-dropdown-badge-active"
                                 : "menu-dropdown-badge-inactive"
@@ -338,7 +339,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed  mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
+      className={`fixed  mt-14 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
         ${
           isExpanded || isMobileOpen
             ? "w-[290px]"
