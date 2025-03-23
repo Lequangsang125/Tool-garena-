@@ -51,7 +51,7 @@ export const login = async (req, res) => {
     // Xóa tất cả refreshTokens cũ trước khi lưu mới
 
     res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
+      httpOnly: false,
       secure: false,
       sameSite: "strict",
       path: "/",
@@ -97,7 +97,7 @@ export const refreshTokenHandler = async (req, res) => {
 
     // Set cookie mới
     res.cookie("refreshToken", newRefreshToken, {
-      httpOnly: true,
+      httpOnly: false,
       secure: false,
       sameSite: "strict",
       path: "/",

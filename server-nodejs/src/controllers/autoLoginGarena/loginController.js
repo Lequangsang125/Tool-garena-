@@ -84,6 +84,7 @@ export async function getAccountInfo(ssoKey) {
     },
   };
   const response = await axios.request(config);
+  console.log("đây là giá trị trả về",response);
   return response.data;
 }
 

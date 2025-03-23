@@ -1,12 +1,19 @@
 import axios from "axios"
-import { loginFailed, loginStart, loginSuccess, logoutStart, logoutSuccess, registerFailed, registerStart, registerSuccess } from "./authSlice";
+import { loginFailed, loginStart, loginSuccess, logoutFailed, logoutStart, logoutSuccess, registerFailed, registerStart, registerSuccess } from "./authSlice";
 import { deleteUserFailed, deleteUserStart, deleteUserSuccess, getUsersFailed, getUsersStart, getUsersSuccess } from "./userSlice";
+import { setBalance } from "./walletSlice";
 
 export const loginUser = async (user, dispatch, navigate) => {
   dispatch(loginStart());
   try {
     const res = await axios.post('http://localhost:4000/api/auth/login', user, { withCredentials: true });
     dispatch(loginSuccess(res.data));
+    if(res.data.balance !== undefined){
+      console.log("cập nhật balance redux:", res.data.balance);
+      dispatch(setBalance(res.data.balance))
+    }else{
+      console.warn("API không trả về balance!");
+    }
     navigate('/');
   } catch (error) {
     console.error("Lỗi đăng nhập:", error.response?.data || error.message);
@@ -62,11 +69,11 @@ export const logOut = async (dispatch, id, navigate, accessToken, axiosJWT) => {
       },
       withCredentials: true // Gửi cookie cùng với yêu cầu
     });
-    dispatch(logoutSuccess());
     localStorage.removeItem('accessToken'); // Xóa token khỏi localStorage (nếu có)
     localStorage.removeItem('refreshToken'); // Xóa refreshToken khỏi localStorage (nếu có)
+    dispatch(logoutSuccess());
     navigate('/signin');
   } catch (error) {
-    dispatch(loginFailed());
+    dispatch(logoutFailed());
   }
 };

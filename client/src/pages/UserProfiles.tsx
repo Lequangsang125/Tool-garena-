@@ -3,8 +3,14 @@ import UserMetaCard from "../components/UserProfile/UserMetaCard";
 import UserInfoCard from "../components/UserProfile/UserInfoCard";
 import UserAddressCard from "../components/UserProfile/UserAddressCard";
 import PageMeta from "../components/common/PageMeta";
+import { useNavigate } from "react-router";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export default function UserProfiles() {
+    const navigate = useNavigate()
+    const user = useSelector((state) => state.auth.login?.currentUser);
+
   return (
     <>
       <PageMeta

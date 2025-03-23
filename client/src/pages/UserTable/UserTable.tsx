@@ -22,6 +22,7 @@ export default function UserTable() {
     }
   }
 
+  
   useEffect(() => {
     if (!user) {
       navigate('/signin')

@@ -10,7 +10,7 @@ const garenaAuthRouter = express.Router();
 // Định nghĩa route POST /auth/login
 garenaAuthRouter.post("/login-garena",verifyRecaptcha, loginGarena);
 garenaAuthRouter.post("/login-getskin",verifyRecaptcha,loginAndGetSkin);
-garenaAuthRouter.post("/spam-garena",verifyToken,spamAccGarena);
+garenaAuthRouter.post("/spam-garena",spamAccGarena);
 
 
 export default garenaAuthRouter;

@@ -13,7 +13,7 @@ const AppFooter: React.FC = () => {
             {/* Desktop Footer (Nền vô hình, chữ vẫn bấm được) */}
             <div className="hidden lg:flex justify-center pointer-events-none gradient">
                 <div className="max-w-4xl w-full mx-auto px-6 flex justify-center items-center gap-2">
-                    © 2025 Version 1.0.0 – Copyright by<div className="font-semibold text-[20px]">Aki (´｡• ω •｡`)</div>| ToolGiaRe.com
+                    © 2025 Version 1.0.0 – Copyright by<div className="font-semibold text-[20px]">le quang sang</div>| ToolGiaRe.com
                 </div>
             </div>
 

@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+
 const authSlice = createSlice({
     name: "auth",
     initialState: {
@@ -48,16 +49,21 @@ const authSlice = createSlice({
         // Trạng thái đăng xuất
         logoutStart: (state) => {
             state.login.isFetching = true;
+            state.login.error = false; // Reset lỗi trước khi đăng xuất
         },
+
         logoutSuccess: (state) => {
             state.login.isFetching = false;
             state.login.error = false;
-            state.login.currentUser = null; // ✅ Đặt currentUser về null trong login, không phải logout
+            state.login.currentUser = null; // Xóa thông tin user
+            state.login.accessToken = null; // Xóa luôn accessToken nếu lưu trong Redux
         },
+
         logoutFailed: (state) => {
             state.login.isFetching = false;
             state.login.error = true;
         },
+
     }
 });
 
