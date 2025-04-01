@@ -29,7 +29,8 @@ export const register = async (req, res) => {
     res.status(201).json({ message: "Đăng ký thành công" });
   } catch (error) {
     console.error("Lỗi server:", error);
-    res.status(500).json({ message: "Lỗi server" });
+    console.error("Lỗi server:", error.message, error.stack);
+
   }
 };
 
