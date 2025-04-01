@@ -14,6 +14,7 @@ import walletRouter from './src/router/walletRouter.js';
 import momoRoutes from './src/router/momoRouter.js';
 import userRoutes from './src/router/userRouter.js';
 import cookieParser from 'cookie-parser';
+// import imageRoutes from './src/router/imageRoutes.js';
 
 
 
@@ -47,6 +48,7 @@ app.use('/api/lienquan',garenaAuthRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/wallet", walletRouter);
 app.use("/api/momo", momoRoutes);
+// app.use("/api/image", imageRoutes);
 
 // cổng chạy
 app.listen(port, () => {

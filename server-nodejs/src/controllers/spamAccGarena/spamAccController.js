@@ -1,8 +1,8 @@
 import axios from "axios";
 import { stringify } from "flatted"; 
 // Hàm lấy request_id từ API Garena
-const datadom = 'llHALJCJ_DBp969otoi45o2IogkWhE6Y8suRYfC5FsMnMAmPBB~5ohxzQuWk~XriQuf~4aqkFWHWH0WWPbuZLUvGeQB~gT~ygnB5onBMUyWeHKhidO2LZ9ny1feimPRB'
-const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36'
+let datadom = 'eUqs_fh~1LE6OC0dYQiKlhp99tTAoP229E88cGO2OWwEPyGE1wnmwREk5XAAMP9UrhOxtsvQ24gap01OVPzlAQBy9yy1y7uU_DIic_vieQXYwO7jP5uKPWdA2DhnDVEA';
+let UserAgent = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.7) Gecko/20091221 Firefox/60.0';
 export async function initRecovery(username) {
     try {
         const payload = {
@@ -29,7 +29,7 @@ export async function initRecovery(username) {
                     "Sec-Fetch-Mode": "cors",
                     "Sec-Fetch-Site": "same-origin",
                     "User-Agent":
-                      `${userAgent}`,
+                      `${UserAgent}`,
                     "sec-ch-ua":
                       '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
                     "sec-ch-ua-mobile": "?0",
@@ -74,7 +74,7 @@ async function submitRecovery(data) {
                     "Sec-Fetch-Mode": "cors",
                     "Sec-Fetch-Site": "same-origin",
                     "User-Agent":
-                      `${userAgent}`,
+                      `${UserAgent}`,
                     "sec-ch-ua":
                       '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
                     "sec-ch-ua-mobile": "?0",

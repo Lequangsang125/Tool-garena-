@@ -5,6 +5,7 @@ import { getSkinList, loginSaleGarena } from './loginAndGetSessionController.js'
 
 
 //==================hàm con góp phần chạy luồng==============
+// B0 - tạo datadom
 // B1-GET: hàm tiền đăng nhập 
 // B2-GET: hàm đăng nhập vào web chính 
 // B3-GET: hàm lấy thông tin tài khoản garena kèm cookie-ssoKey
@@ -27,7 +28,7 @@ export async function loginGarena(req, res) {
       const { username, password } = req.body;
       info.username = username;
       info.password = password;
-  
+      // const dataDom = await getNewDataDom();     
       const preloginData = await getPrelogin(info.username);
       const hashedPassword = CryptoJS.MD5(info.password);
       const encryptedPassword = CryptoJS.SHA256(

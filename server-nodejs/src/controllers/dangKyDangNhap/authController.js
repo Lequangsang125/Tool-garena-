@@ -4,7 +4,7 @@ import nodemailer from "nodemailer";
 import crypto from "crypto";
 import userModel from "../../models/userModel.js";
 
-let refreshTokens = []
+
 // Tạo Access Token
 const generateAccessToken = (user) => {
   return jwt.sign({ id: user._id, admin: user.admin }, process.env.JWT_SECRET, { expiresIn: "20s" });
@@ -19,8 +19,8 @@ const generateRefreshToken = (user) => {
 export const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    const existingUser = await userModel.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: "Email đã tồn tại" });
+    const existingUser = await userModel.findOne({ $or: [{email},{username}] });
+    if (existingUser) return res.status(400).json({ message: "Email hoặc tên tài khoản đã tồn tại" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new userModel({ username, email, password: hashedPassword });
@@ -47,7 +47,8 @@ export const login = async (req, res) => {
 
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
-    refreshTokens.push(refreshToken);
+    
+    await userModel.findByIdAndUpdate(user._id,{refreshToken})
     // Xóa tất cả refreshTokens cũ trước khi lưu mới
 
     res.cookie("refreshToken", refreshToken, {
@@ -73,42 +74,44 @@ export const login = async (req, res) => {
 
 //hàm tạo lại token
 export const refreshTokenHandler = async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken) {
-    return res.status(401).json({ message: "Bạn chưa đăng nhập hoặc phiên đã hết hạn" });
-  }
-
-  if (!refreshTokens.includes(refreshToken)) {
-    return res.status(403).json({ message: "Token không hợp lệ hoặc đã bị thu hồi" });
-  }
-
   try {
-    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH);
-    const { id, username } = decoded; // Trích xuất user từ refreshToken
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      return res.status(401).json({ message: "Bạn chưa đăng nhập hoặc phiên đã hết hạn" });
+    }
 
-    // Xóa token cũ khỏi mảng
-    refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+    // Tìm user có refreshToken này
+    const user = await userModel.findOne({ refreshToken });
+    if (!user) {
+      return res.status(403).json({ message: "Token không hợp lệ hoặc đã bị thu hồi" });
+    }
+
+    // Giải mã token
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH);
 
     // Tạo token mới
-    const newAccessToken = generateAccessToken({ id, username });
-    const newRefreshToken = generateRefreshToken({ id, username });
+    const newAccessToken = generateAccessToken(user);
+    const newRefreshToken = generateRefreshToken(user);
 
-    refreshTokens.push(newRefreshToken); // Lưu token mới vào mảng
+    // Lưu refreshToken mới vào database
+    await userModel.findByIdAndUpdate(user._id, { refreshToken: newRefreshToken });
 
-    // Set cookie mới
+    // Cập nhật cookie
     res.cookie("refreshToken", newRefreshToken, {
-      httpOnly: false,
-      secure: false,
-      sameSite: "strict",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
     });
 
-    return res.json({message:"accesstoken sau khi làm mới ", accessToken: newAccessToken });
+    return res.json({ message: "Access token đã được làm mới", accessToken: newAccessToken });
   } catch (error) {
+    console.error("Lỗi refresh token:", error);
     return res.status(403).json({ message: "Refresh token không hợp lệ" });
   }
 };
+
 
 
 // Đăng xuất
@@ -120,6 +123,8 @@ export const logout = async (req, res) => {
       return res.status(400).json({ message: "Không tìm thấy refreshToken" });
     }
 
+    await userModel.findOneAndUpdate({ refreshToken }, { refreshToken: null });
+
     // Xóa cookie refreshToken
     res.clearCookie("refreshToken", {
       httpOnly: true,    // Cookie chỉ có thể được truy cập bởi server
@@ -127,9 +132,6 @@ export const logout = async (req, res) => {
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // Sử dụng 'None' trong production, 'Lax' trong development
       path: '/'          // Đảm bảo path là đúng
     });
-
-    // Lọc bỏ refreshToken khỏi danh sách các token hợp lệ
-    refreshTokens = refreshTokens.filter(token => token !== refreshToken);
 
     // Phản hồi thành công
     return res.status(200).json({ message: "Đăng xuất thành công" });

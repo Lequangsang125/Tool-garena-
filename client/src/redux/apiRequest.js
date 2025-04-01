@@ -7,30 +7,52 @@ export const loginUser = async (user, dispatch, navigate) => {
   dispatch(loginStart());
   try {
     const res = await axios.post('http://localhost:4000/api/auth/login', user, { withCredentials: true });
+
+    console.log("🟢 API Response:", res.data);
+
     dispatch(loginSuccess(res.data));
-    if(res.data.balance !== undefined){
+
+    if (res.data.balance !== undefined) {
       console.log("cập nhật balance redux:", res.data.balance);
-      dispatch(setBalance(res.data.balance))
-    }else{
-      console.warn("API không trả về balance!");
+      dispatch(setBalance(res.data.balance));
+    } else {
+      console.warn("⚠️ API không trả về balance!");
     }
+
     navigate('/');
+    return { success: true, data: res.data }; // ✅ Trả về kết quả thành công
   } catch (error) {
-    console.error("Lỗi đăng nhập:", error.response?.data || error.message);
+    console.error("🔴 Lỗi đăng nhập:", error);
+    console.error("🔴 Lỗi chi tiết:", error.response?.data || error.message);
+
     dispatch(loginFailed());
+
+    return { success: false, error: error.response?.data?.message || "Đã có lỗi xảy ra" }; // ✅ Trả về lỗi
   }
 };
+
 
 export const registerUser = async (user, dispatch, navigate) => {
   dispatch(registerStart());
   try {
     const res = await axios.post("http://localhost:4000/api/auth/register", user);
-    dispatch(registerSuccess(res.data)); // Truyền dữ liệu từ response vào
+    
+    console.log("🟢 Đăng ký thành công:", res.data);
+
+    dispatch(registerSuccess(res.data)); 
     navigate("/signin");
+
+    return { success: true, data: res.data }; // ✅ Trả về kết quả thành công
   } catch (error) {
-    dispatch(registerFailed(error.response?.data?.message || "Đăng ký thất bại!"));
+    const errorMsg = error.response?.data?.message || "Đăng ký thất bại!";
+    
+    console.error("🔴 Lỗi đăng ký:", errorMsg);
+    dispatch(registerFailed(errorMsg));
+
+    return { success: false, error: errorMsg }; // ✅ Trả về lỗi
   }
 };
+
 
 export const getAllUsers = async (accessToken, dispatch, axiosJWT) => {
   dispatch(getUsersStart());

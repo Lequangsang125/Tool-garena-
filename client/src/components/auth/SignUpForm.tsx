@@ -31,13 +31,13 @@ export default function SignUpForm() {
       return;
     }
 
-    try {
-      await registerUser(formData, dispatch, navigate); // ✅ Sửa newUser thành formData
-    } catch (err) {
-      console.error("Lỗi đăng ký:", err); // Debug lỗi
-      console.error("Chi tiết response:", err.response); // Kiểm tra response trả về từ server
-      setError(err.response?.data?.message || "Đăng ký thất bại. Vui lòng thử lại.");
-    }
+    const response = await registerUser(formData, dispatch, navigate); // ✅ Nhận kết quả từ API
+  console.log("🟢 Kết quả đăng ký:", response);
+
+  if (!response.success) { // ✅ Kiểm tra lỗi và hiển thị
+    setError(response.error);
+    console.error("🔴 Lỗi đăng ký:", response.error);
+  }
   };
 
   return (

@@ -23,8 +23,8 @@ import CheckInfoGarena from "./pages/CheckInfoGarena/CheckInfoGarena";
 import TableDataSkinLq from "./components/tables/BasicTables/TableDataSkinLq";
 import GhepAnhLienQuan from "./pages/GhepAnhLienQuan/GhepAnhLienQuan";
 import SpamGarena from "./pages/SpamGarena/SpamGarena";
-import { Children } from "react";
 import UserTable from "./pages/UserTable/UserTable";
+import AuthRoute from "./router/AuthRoute.tsx"
 
 export default function App() {
   return (
@@ -37,8 +37,8 @@ export default function App() {
 
             {/* Route chính */}
             <Route path="/" element={<Home />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
+            <Route path="/signin" element={<AuthRoute><SignIn /></AuthRoute>} />
+            <Route path="/signup" element={<AuthRoute><SignUp /></AuthRoute>} />
             {/* Route con */}
 
             {/* Others Page */}

@@ -53,7 +53,7 @@ const navItems: NavItem[] = [
       },
       {
         name: "Ghép ảnh acc liên quân",
-        path: "/blank?page=ghep-anh",
+        path: "/ghep-anh-lien-quan",
         new: true,
       },
       // {

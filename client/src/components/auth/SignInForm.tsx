@@ -19,17 +19,18 @@ export default function SignInForm() {
     e.preventDefault();
     const newUser = { username, password };
   
-    console.log("🟢 Đang gửi dữ liệu:", newUser);
+    console.log("🟢 Gửi request:", newUser);
   
-    try {
-      await loginUser(newUser, dispatch, navigate);
-    } catch (error) {
-      // Lấy thông báo lỗi từ phản hồi của API
-      const errorMsg = error.response?.data?.message || error.message || "Đã có lỗi xảy ra";
-      setError(errorMsg);  // Cập nhật thông báo lỗi vào state
-      console.error("🔴 Lỗi đăng nhập:", errorMsg);
+    const response = await loginUser(newUser, dispatch, navigate); // ✅ Nhận giá trị trả về từ API
+    console.log("🟢 Kết quả login:", response);
+  
+    if (!response.success) { // ✅ Kiểm tra response.error
+      setError(response.error);
+      console.error("🔴 Lỗi đăng nhập:", response.error);
     }
   };
+  
+  
   return (
     <div className="flex flex-col flex-1">
       <div className="flex flex-col justify-center lg:mt-30 w-full max-w-md mx-auto">
