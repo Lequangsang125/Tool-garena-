@@ -6,7 +6,7 @@ import { setBalance } from "./walletSlice";
 export const loginUser = async (user, dispatch, navigate) => {
   dispatch(loginStart());
   try {
-    const res = await axios.post('http://localhost:4000/api/auth/login', user, { withCredentials: true });
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, user, { withCredentials: true });
 
     console.log("🟢 API Response:", res.data);
 
@@ -35,7 +35,7 @@ export const loginUser = async (user, dispatch, navigate) => {
 export const registerUser = async (user, dispatch, navigate) => {
   dispatch(registerStart());
   try {
-    const res = await axios.post("http://localhost:4000/api/auth/register", user);
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, user);
     
     console.log("🟢 Đăng ký thành công:", res.data);
 
@@ -57,7 +57,7 @@ export const registerUser = async (user, dispatch, navigate) => {
 export const getAllUsers = async (accessToken, dispatch, axiosJWT) => {
   dispatch(getUsersStart());
   try {
-    const res = await axiosJWT.get("http://localhost:4000/api/users", {
+    const res = await axiosJWT.get(`${import.meta.env.VITE_API_URL}/api/users`, {
       headers: { token: `Bearer ${accessToken}` } // ✅ Đúng chuẩn header
     });
     console.log("Dữ liệu từ API:", res.data); // ✅ Log API response
@@ -71,7 +71,7 @@ export const getAllUsers = async (accessToken, dispatch, axiosJWT) => {
 export const deleteUser = async (accessToken, dispatch, id, axiosJWT) => {
   dispatch(deleteUserStart());
   try {
-    const res = await axiosJWT.delete(`http://localhost:4000/api/users/${id}`, {
+    const res = await axiosJWT.delete(`${import.meta.env.VITE_API_URL}/api/users/${id}`, {
       headers: { token: `Bearer ${accessToken}` }
     });
     console.log('Dữ liệu sau khi xóa', res.data);
@@ -85,7 +85,7 @@ export const deleteUser = async (accessToken, dispatch, id, axiosJWT) => {
 export const logOut = async (dispatch, id, navigate, accessToken, axiosJWT) => {
   dispatch(logoutStart());
   try {
-    await axiosJWT.post('http://localhost:4000/api/auth/logout', id, {
+    await axiosJWT.post(`${import.meta.env.VITE_API_URL}/api/auth/logout`, id, {
       headers: { 
         token: `Bearer ${accessToken}`,
       },

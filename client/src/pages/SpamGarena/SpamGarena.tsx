@@ -20,7 +20,7 @@ export default function SpamGarena() {
     console.log("📌 Username trước khi gửi request:", username); // Kiểm tra giá trị username
   
     try {
-      const response = await fetch("http://localhost:4000/api/lienquan/spam-garena", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/lienquan/spam-garena`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username }), // 🟢 Gửi username vào BE

@@ -78,7 +78,7 @@ export default function CheckSkinLq() {
     toast.info("🔍 Đang kiểm tra tài khoản...");
     try {
       const response = await fetch(
-        "http://localhost:4000/api/lienquan/login-getskin",
+        `${import.meta.env.VITE_API_URL}/api/lienquan/login-getskin`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

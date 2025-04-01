@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 const refreshToken = async () => {
     try {
         const res = await axios.post(
-            "http://localhost:4000/api/auth/refresh-token",
+            `${import.meta.env.VITE_API_URL}/api/auth/refresh-token`,
             {}, // ✅ Không có body, vì token nằm trong cookie
             { withCredentials: true } // ✅ Đặt đúng vị trí
         );
