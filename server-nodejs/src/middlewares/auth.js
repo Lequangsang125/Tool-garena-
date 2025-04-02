@@ -18,6 +18,12 @@ export const verifyToken = (req, res, next) => {
   } catch (error) {
     console.error("❌ Lỗi khi xác minh token:", error);
     if (error.name === "TokenExpiredError") {
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+        path: '/',
+      });  
       return res.status(403).json({ message: "Token hết hạn, vui lòng đăng nhập lại!" });
     }
     return res.status(403).json({ message: "Token không hợp lệ!" });

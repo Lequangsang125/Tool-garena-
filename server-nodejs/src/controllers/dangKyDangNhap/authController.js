@@ -7,7 +7,7 @@ import userModel from "../../models/userModel.js";
 
 // Tạo Access Token
 const generateAccessToken = (user) => {
-  return jwt.sign({ id: user._id, admin: user.admin }, process.env.JWT_SECRET, { expiresIn: "20s" });
+  return jwt.sign({ id: user._id, admin: user.admin }, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
 
 // Tạo Refresh Token
@@ -120,28 +120,41 @@ export const logout = async (req, res) => {
   try {
     // Kiểm tra xem refreshToken có tồn tại trong cookies không
     const { refreshToken } = req.cookies;
+
     if (!refreshToken) {
-      return res.status(400).json({ message: "Không tìm thấy refreshToken" });
+      // Nếu không có refreshToken trong cookie, thông báo người dùng không cần đăng xuất
+      return res.status(400).json({ message: "Không có refreshToken để đăng xuất!" });
     }
 
-    await userModel.findOneAndUpdate({ refreshToken }, { refreshToken: null });
+    // Kiểm tra tính hợp lệ của refreshToken
+    jwt.verify(refreshToken, process.env.JWT_SECRET, async (err, decoded) => {
+      if (err) {
+        console.error("Lỗi xác thực refreshToken:", err);
+        // Nếu refreshToken không hợp lệ hoặc đã hết hạn, vẫn có thể xóa token
+      }
 
-    // Xóa cookie refreshToken
-    res.clearCookie("refreshToken", {
-      httpOnly: true,    // Cookie chỉ có thể được truy cập bởi server
-      secure: process.env.NODE_ENV === 'production', // Sử dụng secure trong môi trường production
-      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // Sử dụng 'None' trong production, 'Lax' trong development
-      path: '/'          // Đảm bảo path là đúng
+      // Xóa refreshToken trong cookie và cơ sở dữ liệu (nếu refreshToken hợp lệ hoặc bị hết hạn)
+      await userModel.findOneAndUpdate(
+        { _id: decoded ? decoded.id : null },  // Nếu có decoded.id thì tìm theo ID, nếu không thì bỏ qua
+        { refreshToken: null } // Cập nhật trường refreshToken thành null
+      );
+
+      // Xóa cookie refreshToken
+      res.clearCookie("refreshToken", {
+        httpOnly: true,    // Cookie chỉ có thể được truy cập bởi server
+        secure: process.env.NODE_ENV === 'production', // Sử dụng secure trong môi trường production
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // Sử dụng 'None' trong production, 'Lax' trong development
+        path: '/'          // Đảm bảo path là đúng
+      });
+
+      // Phản hồi thành công
+      return res.status(200).json({ message: "Đăng xuất thành công" });
     });
-
-    // Phản hồi thành công
-    return res.status(200).json({ message: "Đăng xuất thành công" });
   } catch (error) {
     console.error("Lỗi server:", error);
     return res.status(500).json({ message: "Lỗi server" });
   }
-};
-
+}
 // Gửi email quên mật khẩu
 export const forgotPassword = async (req, res) => {
   try {
