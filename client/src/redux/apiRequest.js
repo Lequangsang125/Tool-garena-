@@ -82,12 +82,12 @@ export const deleteUser = async (accessToken, dispatch, id, axiosJWT) => {
   }
 }
 
-export const logOut = async (dispatch, id, navigate, accessToken,refreshToken, axiosJWT) => {
+export const logOut = async (dispatch, id, navigate, accessToken, axiosJWT) => {
   dispatch(logoutStart());
   try {
     await axiosJWT.post(`${import.meta.env.VITE_API_URL}/api/auth/logout`, id, {
       headers: { 
-        token: `Bearer ${refreshToken}`,
+        token: `Bearer ${accessToken}`,
       },
       withCredentials: true // Gửi cookie cùng với yêu cầu
     });
