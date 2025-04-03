@@ -127,7 +127,7 @@ export const logout = async (req, res) => {
     }
 
     // Kiểm tra tính hợp lệ của refreshToken
-    jwt.verify(refreshToken, process.env.JWT_SECRET, async (err, decoded) => {
+    jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH, async (err, decoded) => {
       if (err) {
         console.error("Lỗi xác thực refreshToken:", err);
         // Nếu refreshToken không hợp lệ hoặc đã hết hạn, vẫn có thể xóa token
