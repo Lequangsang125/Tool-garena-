@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
 import path from "path";
+
 // https://vite.dev/config/
 export default defineConfig({
   resolve: {
@@ -24,7 +25,9 @@ export default defineConfig({
     port: process.env.PORT || 3000,  // Ensure using Render's provided port
     host: '0.0.0.0', // Listen on all IPs
     allowedHosts: [
-      'tool-garena-v1-lqs.onrender.com', // Add this host to the allowed list
+      'tool-garena-v1-lqs.onrender.com', // Host provided by Render
+      'toolgiare.com', // Your custom domain
+      'www.toolgiare.com' // Your custom domain with www
     ],
   },
 });
