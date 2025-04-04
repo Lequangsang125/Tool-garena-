@@ -22,7 +22,7 @@ import CheckSkinLq from "./pages/CheckSkinLq/CheckSkinLq";
 import CheckInfoGarena from "./pages/CheckInfoGarena/CheckInfoGarena";
 import TableDataSkinLq from "./components/tables/BasicTables/TableDataSkinLq";
 import GhepAnhLienQuan from "./pages/GhepAnhLienQuan/GhepAnhLienQuan";
-import SpamGarena from "./pages/SpamGarena/SpamGarena";
+// import SpamGarena from "./pages/SpamGarena/SpamGarena";
 import UserTable from "./pages/UserTable/UserTable";
 import AuthRoute from "./router/AuthRoute.tsx"
 
@@ -53,7 +53,7 @@ export default function App() {
             <Route path="/check-thong-tin-garena" element={<CheckInfoGarena />} />
             <Route path="/check-skin-lien-quan" element={<CheckSkinLq />} />
             <Route path="/ghep-anh-lien-quan" element={<GhepAnhLienQuan />} />
-            <Route path="/spam-acc-garena" element={<SpamGarena />} />
+            <Route path="/spam-acc-garena" element={<Blank />} />
             <Route path="/data-skin" element={<TableDataSkinLq />} />
             <Route path="/basic-tables" element={<BasicTables />} />
 

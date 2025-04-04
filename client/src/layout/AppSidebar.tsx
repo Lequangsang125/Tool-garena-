@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 // Assume these icons are imported from an icon library
 import {
   BoxCubeIcon,
@@ -15,10 +15,10 @@ import {
   UserCircleIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
-import { useSelector } from "react-redux";
-
-
-
+import { useDispatch, useSelector } from "react-redux";
+import {createAxios} from '../createInstance';
+import {logoutSuccess} from '../redux/authSlice'
+import { logOut } from "../redux/apiRequest";
 type NavItem = {
   name: string;
   icon: React.ReactNode;
@@ -153,23 +153,35 @@ const othersItems: NavItem[] = [
   // },
 
 ];
-const othersItems1: NavItem[] = [
-  {
-    icon: <UserCircleIcon />,
-    name: "Trang cá nhân",
-    path: "/profile",
-  },
-  {
-    icon: <PlugInIcon />,
-    name: "Tài khoản",
-    subItems: [
-      { name: "Đăng xuất", path: "/logout", pro: false },
-    ],
-  },
-];
+
 
 const AppSidebar: React.FC = () => {
   const user = useSelector((state) => state.auth.login.currentUser);
+
+  const accessToken = user?.accessToken;
+  const id = user?._id;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  let axiosJWT = createAxios(user,dispatch,logoutSuccess)
+    const handleLogout = () =>{
+      logOut(dispatch, id, navigate, accessToken, axiosJWT)
+    }
+
+    const othersItems1: NavItem[] = [
+      {
+        icon: <UserCircleIcon />,
+        name: "Trang cá nhân",
+        path: "/profile",
+      },
+      {
+        icon: <PlugInIcon />,
+        name: "Tài khoản",
+        subItems: [
+          { name: "Đăng xuất",   pro: false, onClick: handleLogout },
+        ],
+      },
+    ];
+    
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
 
@@ -316,40 +328,33 @@ const AppSidebar: React.FC = () => {
               <ul className="mt-2 space-y-1 ml-9">
                 {nav.subItems.map((subItem) => (
                   <li key={subItem.name}>
-                    <Link
-                      to={subItem.path}
-                      className={`menu-dropdown-item ${
-                        isActive(subItem.path)
-                          ? "menu-dropdown-item-active gradient"
-                          : "menu-dropdown-item-inactive"
-                      }`}
-                    >
-                      {subItem.name}
-                      <span className="flex items-center gap-1 ml-auto">
-                        {subItem.new && (
-                          <span
-                            className={`ml-auto gradient ${
-                              isActive(subItem.path)
-                                ? "menu-dropdown-badge-active"
-                                : "menu-dropdown-badge-inactive"
-                            } menu-dropdown-badge`}
-                          >
-                            new
-                          </span>
-                        )}
-                        {subItem.pro && (
-                          <span
-                            className={`ml-auto ${
-                              isActive(subItem.path)
-                                ? "menu-dropdown-badge-active"
-                                : "menu-dropdown-badge-inactive"
-                            } menu-dropdown-badge`}
-                          >
-                            pro
-                          </span>
-                        )}
-                      </span>
-                    </Link>
+{subItem.onClick ? (
+  <button
+    onClick={(e) => {
+      e.preventDefault();
+      subItem.onClick();
+    }}
+    className={`menu-dropdown-item text-left w-full ${
+      isActive(subItem.path)
+        ? "menu-dropdown-item-active gradient"
+        : "menu-dropdown-item-inactive"
+    }`}
+  >
+    {subItem.name}
+  </button>
+) : (
+  <Link
+    to={subItem.path}
+    className={`menu-dropdown-item ${
+      isActive(subItem.path)
+        ? "menu-dropdown-item-active gradient"
+        : "menu-dropdown-item-inactive"
+    }`}
+  >
+    {subItem.name}
+  </Link>
+)}
+
                   </li>
                 ))}
               </ul>
